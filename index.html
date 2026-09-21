@@ -128,6 +128,34 @@
     background:#2b2c2e !important;
   }
 
+  /* Botão de idioma do menu */
+  .lang-switch{
+    display:flex;
+    gap:2px;
+    background:var(--bg);
+    border:1px solid var(--line);
+    border-radius:999px;
+    padding:3px;
+    margin-left:6px;
+  }
+  .lang-btn{
+    border:none;
+    background:transparent;
+    border-radius:999px;
+    padding:6px 12px;
+    font-family:inherit;
+    font-weight:700;
+    font-size:.78rem;
+    letter-spacing:.04em;
+    color:var(--ink-soft);
+    transition:background .2s, color .2s;
+  }
+  .lang-btn:hover{ color:var(--ink); }
+  .lang-btn.is-active{
+    background:var(--lime);
+    color:var(--lime-ink);
+  }
+
   .nav-toggle{
     display:none;
     background:var(--card);
@@ -1100,6 +1128,8 @@
       pointer-events:auto;
     }
     .nav-links a{ text-align:center; padding:12px; }
+    .lang-switch{ margin:6px 0 0; justify-content:center; }
+    .lang-btn{ flex:1; padding:10px 12px; }
     .nav-toggle{ display:flex; }
     .hero{ padding:130px 0 50px; }
     .hero-actions{ flex-direction:column; }
@@ -1118,21 +1148,26 @@
 </style>
 </head>
 <body>
-<a href="#sobre" class="skip-link">Pular para o conteúdo</a>
+<a href="#sobre" class="skip-link" data-en="Skip to content">Pular para o conteúdo</a>
 
 <!-- ============ MENU FIXO ============ -->
 <header class="nav">
   <div class="nav-inner">
     <a href="#topo" class="nav-logo">Gabriella Braga</a>
-    <nav class="nav-links" id="navLinks" aria-label="Navegação principal">
-      <a href="#sobre">Sobre</a>
-      <a href="#destaques">Destaques</a>
-      <a href="#trabalhos">Trabalhos</a>
-      <a href="#servicos">Serviços</a>
-      <a href="#numeros">Números</a>
-      <a href="#contato" class="nav-cta">Contato</a>
+    <nav class="nav-links" id="navLinks" aria-label="Navegação principal" data-en-aria="Main navigation">
+      <a href="#sobre" data-en="About">Sobre</a>
+      <a href="#destaques" data-en="Highlights">Destaques</a>
+      <a href="#trabalhos" data-en="Work">Trabalhos</a>
+      <a href="#servicos" data-en="Services">Serviços</a>
+      <a href="#numeros" data-en="Numbers">Números</a>
+      <a href="#contato" class="nav-cta" data-en="Contact">Contato</a>
+      <!-- Troca de idioma: os dois botões abaixo mudam o site inteiro -->
+      <div class="lang-switch" role="group" aria-label="Idioma" data-en-aria="Language">
+        <button type="button" class="lang-btn is-active" data-idioma="pt">PT</button>
+        <button type="button" class="lang-btn" data-idioma="en">EN</button>
+      </div>
     </nav>
-    <button class="nav-toggle" id="navToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="navLinks">
+    <button class="nav-toggle" id="navToggle" aria-label="Abrir menu" data-en-aria="Open menu" aria-expanded="false" aria-controls="navLinks">
       <span></span>
     </button>
   </div>
@@ -1144,12 +1179,12 @@
   <section class="hero" id="capa" style="padding-top:150px;">
     <div class="wrap hero-grid">
       <div>
-        <span class="eyebrow"><span class="dot"></span> UGC Creator disponível para novos projetos</span>
-        <h1>Criatividade que <span class="mark">vende</span> de verdade</h1>
-        <p class="lead">Eu transformo produtos em vídeos autênticos que param o scroll e geram resultado para marcas de skincare, fitness, pet, viagem e tech.</p>
+        <span class="eyebrow" data-en="&lt;span class=&quot;dot&quot;&gt;&lt;/span&gt; UGC Creator available for new projects"><span class="dot"></span> UGC Creator disponível para novos projetos</span>
+        <h1 data-en="Creativity that truly &lt;span class=&quot;mark&quot;&gt;sells&lt;/span&gt;">Criatividade que <span class="mark">vende</span> de verdade</h1>
+        <p class="lead" data-en="I turn products into authentic videos that stop the scroll and drive real results for skincare, fitness, pet, travel and tech brands.">Eu transformo produtos em vídeos autênticos que param o scroll e geram resultado para marcas de skincare, fitness, pet, viagem e tech.</p>
         <div class="hero-actions">
-          <a href="#contato" class="btn btn-primary">Fale comigo</a>
-          <a href="#trabalhos" class="btn btn-ghost">Veja os trabalhos</a>
+          <a href="#contato" class="btn btn-primary" data-en="Get in touch">Fale comigo</a>
+          <a href="#trabalhos" class="btn btn-ghost" data-en="See the work">Veja os trabalhos</a>
         </div>
         <div class="hero-stats" id="heroStats">
           <!-- Números da capa preenchidos via JS a partir de heroStatsData -->
@@ -1157,15 +1192,15 @@
       </div>
 
       <div class="hero-visual" aria-hidden="false">
-        <div class="editor-frame" role="img" aria-label="Foto de Gabriella Braga, formato retrato 4:5">
+        <div class="editor-frame" role="img" aria-label="Foto de Gabriella Braga, formato retrato 4:5" data-en-aria="Photo of Gabriella Braga, 4:5 portrait format">
           <!-- Troque este bloco pela sua foto real: <img src="sua-foto.jpg" alt="Gabriella Braga, UGC Creator"> -->
-          <div>
+          <div data-en="CREATOR PHOTO&lt;br&gt;&lt;small&gt;4:5 format, replace with the real image&lt;/small&gt;">
             FOTO DA CREATOR<br>
             <small>formato 4:5, troque pela imagem real</small>
           </div>
         </div>
-        <div class="float-chip chip-effects">✨ Efeitos</div>
-        <div class="float-chip chip-hi">Oi ✌️</div>
+        <div class="float-chip chip-effects" data-en="✨ Effects">✨ Efeitos</div>
+        <div class="float-chip chip-hi" data-en="Hi ✌️">Oi ✌️</div>
         <div class="float-chip chip-toolbar" aria-hidden="true">
           <span></span><span></span><span></span><span></span>
         </div>
@@ -1197,26 +1232,26 @@
     <div class="wrap">
       <div class="about reveal">
         <div class="about-inner">
-          <div class="about-photo" role="img" aria-label="Foto de Gabriella Braga, formato quadrado">
+          <div class="about-photo" role="img" aria-label="Foto de Gabriella Braga, formato quadrado" data-en-aria="Photo of Gabriella Braga, square format" data-en="CREATOR PHOTO&lt;br&gt;4:5">
             <!-- Troque este bloco pela sua foto real: <img src="sua-foto-2.jpg" alt="Gabriella Braga sorrindo"> -->
             FOTO DA CREATOR<br>4:5
           </div>
           <div class="about-text">
-            <span class="kicker">Sobre mim</span>
-            <p>Oi, eu sou a Gabriella! Sou UGC Creator em Goiânia e adoro transformar produtos em conteúdo que parece feito por uma amiga, não por uma propaganda. Já criei vídeos para marcas de skincare, fitness, pet, viagem e tech, sempre pensando no que faz a pessoa parar de rolar o feed e prestar atenção.</p>
-            <p>Gosto de trabalhar de forma organizada e transparente: você sabe exatamente o que vai receber, quando vai receber e pode confiar que o processo vai ser tranquilo do início ao fim.</p>
+            <span class="kicker" data-en="About me">Sobre mim</span>
+            <p data-en="Hi, I am Gabriella! I am a UGC Creator based in Goiânia and I love turning products into content that feels like it came from a friend, not from an ad. I have created videos for skincare, fitness, pet, travel and tech brands, always thinking about what makes someone stop scrolling and pay attention.">Oi, eu sou a Gabriella! Sou UGC Creator em Goiânia e adoro transformar produtos em conteúdo que parece feito por uma amiga, não por uma propaganda. Já criei vídeos para marcas de skincare, fitness, pet, viagem e tech, sempre pensando no que faz a pessoa parar de rolar o feed e prestar atenção.</p>
+            <p data-en="I like working in an organised and transparent way: you know exactly what you will receive, when you will receive it, and you can trust the process will be smooth from start to finish.">Gosto de trabalhar de forma organizada e transparente: você sabe exatamente o que vai receber, quando vai receber e pode confiar que o processo vai ser tranquilo do início ao fim.</p>
             <ul class="promises">
               <li class="promise">
                 <span class="num">1</span>
-                <p>Roteiro aprovado por você antes de qualquer gravação</p>
+                <p data-en="Script approved by you before any filming">Roteiro aprovado por você antes de qualquer gravação</p>
               </li>
               <li class="promise">
                 <span class="num">2</span>
-                <p>Uma rodada de ajuste inclusa no valor combinado</p>
+                <p data-en="One round of edits included in the agreed price">Uma rodada de ajuste inclusa no valor combinado</p>
               </li>
               <li class="promise">
                 <span class="num">3</span>
-                <p>Entrega em até 72 horas úteis após a gravação</p>
+                <p data-en="Delivery within 72 business hours after filming">Entrega em até 72 horas úteis após a gravação</p>
               </li>
             </ul>
             <p class="signature">Gabriella Braga
@@ -1232,9 +1267,9 @@
   <section id="destaques">
     <div class="wrap">
       <div class="section-head reveal">
-        <span class="kicker">Destaques</span>
-        <h2>Conteúdos que <span class="mark">performaram</span> de verdade</h2>
-        <p>Uma seleção dos vídeos com mais alcance e resultado para as marcas que confiaram no meu trabalho.</p>
+        <span class="kicker" data-en="Highlights">Destaques</span>
+        <h2 data-en="Content that truly &lt;span class=&quot;mark&quot;&gt;performed&lt;/span&gt;">Conteúdos que <span class="mark">performaram</span> de verdade</h2>
+        <p data-en="A selection of the videos with the most reach and results for the brands that trusted my work.">Uma seleção dos vídeos com mais alcance e resultado para as marcas que confiaram no meu trabalho.</p>
       </div>
       <div class="highlights-grid" id="highlightsGrid">
         <!-- Cards de destaque preenchidos via JS a partir de highlightsData -->
@@ -1246,11 +1281,11 @@
   <section id="trabalhos">
     <div class="wrap">
       <div class="section-head reveal">
-        <span class="kicker">Portfólio</span>
-        <h2>Trabalhos por <span class="mark">nicho</span></h2>
-        <p>Filtre por área de atuação e veja exemplos do meu trabalho em cada segmento.</p>
+        <span class="kicker" data-en="Portfolio">Portfólio</span>
+        <h2 data-en="Work by &lt;span class=&quot;mark&quot;&gt;niche&lt;/span&gt;">Trabalhos por <span class="mark">nicho</span></h2>
+        <p data-en="Filter by industry and see examples of my work in each segment.">Filtre por área de atuação e veja exemplos do meu trabalho em cada segmento.</p>
       </div>
-      <div class="filters reveal" id="filters" role="group" aria-label="Filtrar trabalhos por nicho">
+      <div class="filters reveal" id="filters" role="group" aria-label="Filtrar trabalhos por nicho" data-en-aria="Filter work by niche">
         <!-- Botões de filtro preenchidos via JS a partir de niches -->
       </div>
       <div class="work-grid" id="workGrid">
@@ -1263,9 +1298,9 @@
   <section id="servicos">
     <div class="wrap">
       <div class="section-head reveal">
-        <span class="kicker">Serviços</span>
-        <h2>Como eu <span class="mark">te ajudo</span></h2>
-        <p>Pacotes pensados para dar liberdade para você escolher o formato ideal para a sua marca.</p>
+        <span class="kicker" data-en="Services">Serviços</span>
+        <h2 data-en="How I &lt;span class=&quot;mark&quot;&gt;help you&lt;/span&gt;">Como eu <span class="mark">te ajudo</span></h2>
+        <p data-en="Packages designed to give you freedom to choose the ideal format for your brand.">Pacotes pensados para dar liberdade para você escolher o formato ideal para a sua marca.</p>
       </div>
       <div class="services-grid" id="servicesGrid">
         <!-- Cards de serviço preenchidos via JS a partir de servicesData -->
@@ -1277,9 +1312,9 @@
   <section id="numeros">
     <div class="wrap">
       <div class="section-head reveal">
-        <span class="kicker">Resultados</span>
-        <h2>Números e <span class="mark">depoimentos</span></h2>
-        <p>O impacto real do meu conteúdo, na visão dos dados e das marcas que já trabalharam comigo.</p>
+        <span class="kicker" data-en="Results">Resultados</span>
+        <h2 data-en="Numbers and &lt;span class=&quot;mark&quot;&gt;testimonials&lt;/span&gt;">Números e <span class="mark">depoimentos</span></h2>
+        <p data-en="The real impact of my content, through the data and through the brands that have worked with me.">O impacto real do meu conteúdo, na visão dos dados e das marcas que já trabalharam comigo.</p>
       </div>
 
       <div class="metrics-grid reveal" id="metricsGrid">
@@ -1302,15 +1337,15 @@
       <div class="contact-box reveal">
         <div>
           <div class="section-head" style="margin-bottom:0;">
-            <span class="kicker">Contato</span>
-            <h2>Bora criar juntos?</h2>
-            <p>Me conta um pouco sobre a sua marca e o que você precisa. Respondo rapidinho!</p>
+            <span class="kicker" data-en="Contact">Contato</span>
+            <h2 data-en="Let us create together">Bora criar juntos?</h2>
+            <p data-en="Tell me a bit about your brand and what you need. I reply quickly!">Me conta um pouco sobre a sua marca e o que você precisa. Respondo rapidinho!</p>
           </div>
           <div class="contact-links">
             <a class="contact-link" href="https://wa.me/5562982156150" target="_blank" rel="noopener">
               WhatsApp · (62) 98215-6150 <span class="arrow">→</span>
             </a>
-            <a class="contact-link" href="mailto:gabriellavazbraga@gmail.com">
+            <a class="contact-link" href="mailto:gabriellavazbraga@gmail.com" data-en="Email · gabriellavazbraga@gmail.com &lt;span class=&quot;arrow&quot;&gt;→&lt;/span&gt;">
               E-mail · gabriellavazbraga@gmail.com <span class="arrow">→</span>
             </a>
             <a class="contact-link" href="https://instagram.com/bibibriella" target="_blank" rel="noopener">
@@ -1322,21 +1357,21 @@
         <div class="contact-form" id="contactFormWrap">
           <form id="contactForm" novalidate>
             <div class="form-row">
-              <label for="contactName">Nome</label>
+              <label for="contactName" data-en="Name">Nome</label>
               <input type="text" id="contactName" name="name" autocomplete="name" required>
             </div>
             <div class="form-row">
-              <label for="contactEmail">E-mail</label>
+              <label for="contactEmail" data-en="Email">E-mail</label>
               <input type="email" id="contactEmail" name="email" autocomplete="email" required>
             </div>
             <div class="form-row">
-              <label for="contactMessage">Mensagem</label>
+              <label for="contactMessage" data-en="Message">Mensagem</label>
               <textarea id="contactMessage" name="message" required></textarea>
             </div>
-            <button type="submit" class="btn btn-lime form-submit">Enviar mensagem</button>
-            <p class="form-note">Nenhum dado é enviado a servidores externos nesta demonstração.</p>
+            <button type="submit" class="btn btn-lime form-submit" data-en="Send message">Enviar mensagem</button>
+            <p class="form-note" data-en="No data is sent to external servers in this demo.">Nenhum dado é enviado a servidores externos nesta demonstração.</p>
           </form>
-          <div class="form-success" id="formSuccess">
+          <div class="form-success" id="formSuccess" data-en="Message sent!&lt;span&gt;Thank you for reaching out, I will get back to you soon.&lt;/span&gt;">
             Mensagem enviada com sucesso!
             <span>Obrigada pelo contato, vou te responder em breve.</span>
           </div>
@@ -1354,7 +1389,7 @@
     <div class="footer-links">
       <a href="https://instagram.com/bibibriella" target="_blank" rel="noopener">Instagram</a>
       <a href="https://wa.me/5562982156150" target="_blank" rel="noopener">WhatsApp</a>
-      <a href="mailto:gabriellavazbraga@gmail.com">E-mail</a>
+      <a href="mailto:gabriellavazbraga@gmail.com" data-en="Email">E-mail</a>
     </div>
     <span class="footer-year" id="footerYear"></span>
   </div>
@@ -1363,19 +1398,19 @@
 <!-- ============ CARD DE CAPTURA ============ -->
 <div class="capture-overlay" id="captureOverlay" role="dialog" aria-modal="true" aria-labelledby="captureTitle">
   <div class="capture-card">
-    <button class="capture-close" id="captureClose" aria-label="Fechar">✕</button>
-    <h3 id="captureTitle">Quer meu mídia kit completo?</h3>
-    <p>Deixe seu nome e e-mail que eu te envio com todos os meus números, formatos e valores.</p>
+    <button class="capture-close" id="captureClose" aria-label="Fechar" data-en-aria="Close">✕</button>
+    <h3 id="captureTitle" data-en="Want my full media kit?">Quer meu mídia kit completo?</h3>
+    <p data-en="Leave your name and email and I will send it over with all my numbers, formats and rates.">Deixe seu nome e e-mail que eu te envio com todos os meus números, formatos e valores.</p>
     <form id="captureForm">
       <div class="form-row">
-        <label for="captureName">Nome</label>
+        <label for="captureName" data-en="Name">Nome</label>
         <input type="text" id="captureName" name="name" autocomplete="name" required>
       </div>
       <div class="form-row">
-        <label for="captureEmail">E-mail</label>
+        <label for="captureEmail" data-en="Email">E-mail</label>
         <input type="email" id="captureEmail" name="email" autocomplete="email" required>
       </div>
-      <button type="submit" class="btn btn-lime">Quero receber</button>
+      <button type="submit" class="btn btn-lime" data-en="Send it to me">Quero receber</button>
     </form>
   </div>
 </div>
@@ -1396,13 +1431,17 @@
   /* =========================================================
      DADOS: edite os arrays abaixo para atualizar o site
      sem precisar mexer no HTML.
+
+     Campos terminados em "En" são a versão em inglês do campo
+     de mesmo nome. Se apagar um deles, o site mostra o texto em
+     português mesmo no idioma inglês.
   ========================================================== */
 
   // Números rápidos exibidos na primeira dobra (capa)
   var heroStatsData = [
-    { value: 120, suffix: "+", label: "vídeos entregues" },
-    { value: 35, suffix: "+", label: "marcas atendidas" },
-    { value: 8, suffix: "M+", label: "views somadas" }
+    { value: 120, suffix: "+", label: "vídeos entregues", labelEn: "videos delivered" },
+    { value: 35, suffix: "+", label: "marcas atendidas", labelEn: "brands served" },
+    { value: 8, suffix: "M+", label: "views somadas", labelEn: "total views" }
   ];
 
   // Nomes de marcas para a faixa da capa (troque pelos seus clientes reais)
@@ -1419,75 +1458,93 @@
       link: "#",
       metricValue: "+2,4M",
       metricLabel: "views no reels",
+      metricLabelEn: "reels views",
       title: "Rotina de skincare noturna",
-      context: "Vídeo autêntico mostrando o passo a passo real do produto."
+      titleEn: "Night skincare routine",
+      context: "Vídeo autêntico mostrando o passo a passo real do produto.",
+      contextEn: "Authentic video showing the real step by step of the product."
     },
     {
       link: "#",
       metricValue: "+980K",
       metricLabel: "views no tiktok",
+      metricLabelEn: "tiktok views",
       title: "Unboxing surpresa",
-      context: "Reação genuína de abertura do produto, gerou alto engajamento."
+      titleEn: "Surprise unboxing",
+      context: "Reação genuína de abertura do produto, gerou alto engajamento.",
+      contextEn: "Genuine reaction opening the product, drove high engagement."
     },
     {
       link: "#",
       metricValue: "+3,1M",
       metricLabel: "views no reels",
+      metricLabelEn: "reels views",
       title: "Antes e depois em treino",
-      context: "Conteúdo fitness com resultado visual em poucos segundos."
+      titleEn: "Before and after a workout",
+      context: "Conteúdo fitness com resultado visual em poucos segundos.",
+      contextEn: "Fitness content with a visible result in just a few seconds."
     }
   ];
 
-  // Nichos usados nos filtros da galeria de trabalhos
-  var niches = ["Todos","Skincare","Fitness","Pet","Viagem","Tech"];
+  // Nichos usados nos filtros da galeria de trabalhos.
+  // O campo "id" liga o filtro aos trabalhos, então não mude ele
+  // sem trocar também o campo niche de cada trabalho abaixo.
+  var niches = [
+    { id:"Todos",    pt:"Todos",    en:"All" },
+    { id:"Skincare", pt:"Skincare", en:"Skincare" },
+    { id:"Fitness",  pt:"Fitness",  en:"Fitness" },
+    { id:"Pet",      pt:"Pet",      en:"Pet" },
+    { id:"Viagem",   pt:"Viagem",   en:"Travel" },
+    { id:"Tech",     pt:"Tech",     en:"Tech" }
+  ];
 
   // Trabalhos por nicho (a capa é um bloco placeholder, troque pela imagem real do trabalho)
   var worksData = [
-    { niche:"Skincare", title:"Sérum facial: resenha em vídeo", desc:"Vídeo de resenha honesta para lançamento de produto." },
-    { niche:"Skincare", title:"Rotina matinal completa", desc:"Conteúdo em formato tutorial para redes da marca." },
-    { niche:"Fitness", title:"Treino em casa com equipamento", desc:"Vídeo demonstrativo de uso do produto durante treino." },
-    { niche:"Fitness", title:"Suplemento pós-treino", desc:"Depoimento em vídeo sobre experiência de uso." },
-    { niche:"Pet", title:"Petisco natural: reação do pet", desc:"Vídeo espontâneo mostrando a reação do animal ao produto." },
-    { niche:"Pet", title:"Acessório para passeio", desc:"Conteúdo de uso real em ambiente externo." },
-    { niche:"Viagem", title:"Mala organizada com produto", desc:"Vídeo de dica prática integrando o produto à rotina de viagem." },
-    { niche:"Viagem", title:"Diário de bordo patrocinado", desc:"Série curta mostrando o produto em uso durante a viagem." },
-    { niche:"Tech", title:"Unboxing de gadget", desc:"Vídeo de unboxing com primeiras impressões." },
-    { niche:"Tech", title:"Review de aplicativo", desc:"Conteúdo explicando funcionalidades na prática." },
-    { niche:"Skincare", title:"Comparativo de texturas", desc:"Vídeo close-up mostrando textura e aplicação do produto." },
-    { niche:"Fitness", title:"Desafio de 7 dias", desc:"Série de vídeos curtos acompanhando o uso do produto." }
+    { niche:"Skincare", title:"Sérum facial: resenha em vídeo", titleEn:"Face serum: video review", desc:"Vídeo de resenha honesta para lançamento de produto.", descEn:"Honest review video for a product launch." },
+    { niche:"Skincare", title:"Rotina matinal completa", titleEn:"Full morning routine", desc:"Conteúdo em formato tutorial para redes da marca.", descEn:"Tutorial style content for the brand channels." },
+    { niche:"Fitness", title:"Treino em casa com equipamento", titleEn:"Home workout with equipment", desc:"Vídeo demonstrativo de uso do produto durante treino.", descEn:"Demo video showing the product in use during a workout." },
+    { niche:"Fitness", title:"Suplemento pós-treino", titleEn:"Post workout supplement", desc:"Depoimento em vídeo sobre experiência de uso.", descEn:"Video testimonial about the experience of using it." },
+    { niche:"Pet", title:"Petisco natural: reação do pet", titleEn:"Natural treat: the pet reaction", desc:"Vídeo espontâneo mostrando a reação do animal ao produto.", descEn:"Spontaneous video showing the animal reacting to the product." },
+    { niche:"Pet", title:"Acessório para passeio", titleEn:"Accessory for walks", desc:"Conteúdo de uso real em ambiente externo.", descEn:"Real use content filmed outdoors." },
+    { niche:"Viagem", title:"Mala organizada com produto", titleEn:"Suitcase packed with the product", desc:"Vídeo de dica prática integrando o produto à rotina de viagem.", descEn:"Practical tip video fitting the product into a travel routine." },
+    { niche:"Viagem", title:"Diário de bordo patrocinado", titleEn:"Sponsored travel diary", desc:"Série curta mostrando o produto em uso durante a viagem.", descEn:"Short series showing the product in use during the trip." },
+    { niche:"Tech", title:"Unboxing de gadget", titleEn:"Gadget unboxing", desc:"Vídeo de unboxing com primeiras impressões.", descEn:"Unboxing video with first impressions." },
+    { niche:"Tech", title:"Review de aplicativo", titleEn:"App review", desc:"Conteúdo explicando funcionalidades na prática.", descEn:"Content explaining the features in practice." },
+    { niche:"Skincare", title:"Comparativo de texturas", titleEn:"Texture comparison", desc:"Vídeo close-up mostrando textura e aplicação do produto.", descEn:"Close up video showing the texture and how to apply it." },
+    { niche:"Fitness", title:"Desafio de 7 dias", titleEn:"7 day challenge", desc:"Série de vídeos curtos acompanhando o uso do produto.", descEn:"Series of short videos following the use of the product." }
   ];
 
   // Serviços oferecidos
   var servicesData = [
-    { num:"01", title:"Vídeo UGC", desc:"Vídeo autêntico gravado por mim, pronto para suas redes ou anúncios." },
-    { num:"02", title:"Corte para anúncio", desc:"Edição otimizada para performance em campanhas pagas." },
-    { num:"03", title:"Fotos do produto", desc:"Conjunto de fotos em alta qualidade para uso comercial." },
-    { num:"04", title:"Unboxing", desc:"Vídeo de abertura e primeira impressão real do produto." },
-    { num:"05", title:"Publicação no meu perfil", desc:"Conteúdo publicado no meu Instagram, alcançando minha audiência." },
-    { num:"06", title:"Pacote mensal", desc:"Produção recorrente de conteúdo para manter sua marca sempre ativa." }
+    { num:"01", title:"Vídeo UGC", titleEn:"UGC video", desc:"Vídeo autêntico gravado por mim, pronto para suas redes ou anúncios.", descEn:"Authentic video filmed by me, ready for your channels or ads." },
+    { num:"02", title:"Corte para anúncio", titleEn:"Ad cut", desc:"Edição otimizada para performance em campanhas pagas.", descEn:"Edit optimised for performance in paid campaigns." },
+    { num:"03", title:"Fotos do produto", titleEn:"Product photos", desc:"Conjunto de fotos em alta qualidade para uso comercial.", descEn:"Set of high quality photos for commercial use." },
+    { num:"04", title:"Unboxing", titleEn:"Unboxing", desc:"Vídeo de abertura e primeira impressão real do produto.", descEn:"Opening video with a real first impression of the product." },
+    { num:"05", title:"Publicação no meu perfil", titleEn:"Post on my profile", desc:"Conteúdo publicado no meu Instagram, alcançando minha audiência.", descEn:"Content published on my Instagram, reaching my audience." },
+    { num:"06", title:"Pacote mensal", titleEn:"Monthly package", desc:"Produção recorrente de conteúdo para manter sua marca sempre ativa.", descEn:"Recurring content production to keep your brand always active." }
   ];
 
   // Métricas com contador animado
   var metricsData = [
-    { value:120, suffix:"+", label:"vídeos entregues" },
-    { value:35, suffix:"+", label:"marcas atendidas" },
-    { value:8, suffix:"M+", label:"views somadas" },
-    { value:98, suffix:"%", label:"clientes satisfeitos" }
+    { value:120, suffix:"+", label:"vídeos entregues", labelEn:"videos delivered" },
+    { value:35, suffix:"+", label:"marcas atendidas", labelEn:"brands served" },
+    { value:8, suffix:"M+", label:"views somadas", labelEn:"total views" },
+    { value:98, suffix:"%", label:"clientes satisfeitos", labelEn:"satisfied clients" }
   ];
 
   // Resultados de campanha
   var campaignResultsData = [
-    { tag:"Skincare", title:"+40% de cliques", desc:"Campanha em reels gerou aumento expressivo de tráfego para o site da marca." },
-    { tag:"Fitness", title:"+2,4M de alcance", desc:"Vídeo único ultrapassou a meta de visualizações em uma semana." },
-    { tag:"Pet", title:"+300 comentários", desc:"Conteúdo espontâneo gerou alto volume de interação orgânica." }
+    { tag:"Skincare", tagEn:"Skincare", title:"+40% de cliques", titleEn:"+40% in clicks", desc:"Campanha em reels gerou aumento expressivo de tráfego para o site da marca.", descEn:"Reels campaign drove a significant rise in traffic to the brand site." },
+    { tag:"Fitness", tagEn:"Fitness", title:"+2,4M de alcance", titleEn:"+2.4M in reach", desc:"Vídeo único ultrapassou a meta de visualizações em uma semana.", descEn:"A single video passed the views target in one week." },
+    { tag:"Pet", tagEn:"Pet", title:"+300 comentários", titleEn:"+300 comments", desc:"Conteúdo espontâneo gerou alto volume de interação orgânica.", descEn:"Spontaneous content drove a high volume of organic interaction." }
   ];
 
   // Depoimentos de clientes
   var testimonialsData = [
-    { text:"A Gabriella entregou um vídeo muito além do esperado, com uma naturalidade que fez toda a diferença nos resultados.", name:"Cliente 01", company:"Empresa 01" },
-    { text:"Processo tranquilo do roteiro à entrega, e o conteúdo performou muito bem nos nossos anúncios.", name:"Cliente 02", company:"Empresa 02" },
-    { text:"Profissional organizada, pontual e com um olhar ótimo para o que funciona nas redes sociais.", name:"Cliente 03", company:"Empresa 03" },
-    { text:"Recontratamos porque o retorno em engajamento foi visivelmente maior com os vídeos dela.", name:"Cliente 04", company:"Empresa 04" }
+    { text:"A Gabriella entregou um vídeo muito além do esperado, com uma naturalidade que fez toda a diferença nos resultados.", textEn:"Gabriella delivered a video far beyond what we expected, with a naturalness that made all the difference in the results.", name:"Cliente 01", company:"Empresa 01" },
+    { text:"Processo tranquilo do roteiro à entrega, e o conteúdo performou muito bem nos nossos anúncios.", textEn:"Smooth process from script to delivery, and the content performed really well in our ads.", name:"Cliente 02", company:"Empresa 02" },
+    { text:"Profissional organizada, pontual e com um olhar ótimo para o que funciona nas redes sociais.", textEn:"Organised and punctual professional with a great eye for what works on social media.", name:"Cliente 03", company:"Empresa 03" },
+    { text:"Recontratamos porque o retorno em engajamento foi visivelmente maior com os vídeos dela.", textEn:"We hired her again because the engagement return was clearly higher with her videos.", name:"Cliente 04", company:"Empresa 04" }
   ];
 
   /* =========================================================
@@ -1508,11 +1565,18 @@
     if (linkNumeros) linkNumeros.style.display = "none";
   }
 
+  // Deixa um texto seguro para ir dentro de um atributo HTML
+  function esc(texto){
+    return String(texto === undefined || texto === null ? "" : texto)
+      .replace(/&/g,"&amp;").replace(/"/g,"&quot;").replace(/</g,"&lt;");
+  }
+
   // Capa: números rápidos
   var heroStatsEl = document.getElementById("heroStats");
   heroStatsData.forEach(function(stat){
     var card = el("div","hero-stat");
-    card.innerHTML = '<b class="js-counter" data-target="'+stat.value+'" data-suffix="'+stat.suffix+'">0'+stat.suffix+'</b><span>'+stat.label+'</span>';
+    card.innerHTML = '<b class="js-counter" data-target="'+stat.value+'" data-suffix="'+stat.suffix+'">0'+stat.suffix+'</b>' +
+      '<span data-en="'+esc(stat.labelEn)+'">'+stat.label+'</span>';
     heroStatsEl.appendChild(card);
   });
 
@@ -1531,16 +1595,19 @@
     a.target = "_blank";
     a.rel = "noopener";
     a.setAttribute("aria-label", item.title + ", abrir vídeo");
+    a.setAttribute("data-en-aria", item.titleEn + ", open video");
     a.innerHTML =
-      '<div class="highlight-cover" role="img" aria-label="Capa vertical 9:16 do vídeo: ' + item.title + '">' +
+      '<div class="highlight-cover" role="img" aria-label="Capa vertical 9:16 do vídeo: ' + esc(item.title) + '"' +
+        ' data-en-aria="Vertical 9:16 cover of the video: ' + esc(item.titleEn) + '"' +
+        ' data-en="&lt;span&gt;VIDEO COVER&lt;br&gt;&lt;small style=&quot;font-weight:600;font-size:.75rem;&quot;&gt;9:16 format&lt;/small&gt;&lt;/span&gt;&lt;span class=&quot;play-btn&quot; aria-hidden=&quot;true&quot;&gt;&lt;/span&gt;">' +
         /* Troque este div pela capa real do vídeo: <img src="capa.jpg" alt="..."> */
         '<span>CAPA DO VÍDEO<br><small style="font-weight:600;font-size:.75rem;">formato 9:16</small></span>' +
         '<span class="play-btn" aria-hidden="true"></span>' +
       '</div>' +
       '<div class="highlight-body">' +
-        '<div class="highlight-metric">' + item.metricValue + '<span>' + item.metricLabel + '</span></div>' +
-        '<h3 class="highlight-title">' + item.title + '</h3>' +
-        '<p class="highlight-ctx">' + item.context + '</p>' +
+        '<div class="highlight-metric">' + item.metricValue + '<span data-en="' + esc(item.metricLabelEn) + '">' + item.metricLabel + '</span></div>' +
+        '<h3 class="highlight-title" data-en="' + esc(item.titleEn) + '">' + item.title + '</h3>' +
+        '<p class="highlight-ctx" data-en="' + esc(item.contextEn) + '">' + item.context + '</p>' +
       '</div>';
     highlightsGrid.appendChild(a);
   });
@@ -1549,30 +1616,37 @@
   var filtersEl = document.getElementById("filters");
   var workGrid = document.getElementById("workGrid");
 
+  // Guarda o rótulo de cada nicho nos dois idiomas, para as etiquetas dos cards
+  var rotulosNicho = {};
+  niches.forEach(function(niche){ rotulosNicho[niche.id] = niche; });
+
   niches.forEach(function(niche, i){
-    var btn = el("button","filter-btn" + (i===0 ? " is-active" : ""), niche);
+    var btn = el("button","filter-btn" + (i===0 ? " is-active" : ""), niche.pt);
     btn.type = "button";
-    btn.dataset.niche = niche;
+    btn.dataset.niche = niche.id;
+    btn.setAttribute("data-en", niche.en);
     btn.addEventListener("click", function(){
       filtersEl.querySelectorAll(".filter-btn").forEach(function(b){ b.classList.remove("is-active"); });
       btn.classList.add("is-active");
-      filterWorks(niche);
+      filterWorks(niche.id);
     });
     filtersEl.appendChild(btn);
   });
 
   worksData.forEach(function(work){
     var card = el("article","work-card reveal");
+    var rotulo = rotulosNicho[work.niche] || { pt: work.niche, en: work.niche };
     card.dataset.niche = work.niche;
     card.innerHTML =
-      '<div class="work-cover" role="img" aria-label="Imagem do trabalho: ' + work.title + '">' +
+      '<div class="work-cover" role="img" aria-label="Imagem do trabalho: ' + esc(work.title) + '"' +
+        ' data-en-aria="Image of the work: ' + esc(work.titleEn) + '" data-en="WORK PHOTO">' +
         /* Troque este div pela imagem real do trabalho: <img src="trabalho.jpg" alt="..."> */
         'FOTO DO TRABALHO' +
       '</div>' +
       '<div class="work-info">' +
-        '<span class="work-tag">' + work.niche + '</span>' +
-        '<h3>' + work.title + '</h3>' +
-        '<p>' + work.desc + '</p>' +
+        '<span class="work-tag" data-en="' + esc(rotulo.en) + '">' + rotulo.pt + '</span>' +
+        '<h3 data-en="' + esc(work.titleEn) + '">' + work.title + '</h3>' +
+        '<p data-en="' + esc(work.descEn) + '">' + work.desc + '</p>' +
       '</div>';
     workGrid.appendChild(card);
   });
@@ -1593,8 +1667,8 @@
     var card = el("div","service-card reveal");
     card.innerHTML =
       '<span class="service-num">' + service.num + '</span>' +
-      '<h3>' + service.title + '</h3>' +
-      '<p>' + service.desc + '</p>';
+      '<h3 data-en="' + esc(service.titleEn) + '">' + service.title + '</h3>' +
+      '<p data-en="' + esc(service.descEn) + '">' + service.desc + '</p>';
     servicesGrid.appendChild(card);
   });
 
@@ -1604,7 +1678,7 @@
     var card = el("div","metric-card");
     card.innerHTML =
       '<b class="js-counter" data-target="' + metric.value + '" data-suffix="' + metric.suffix + '">0' + metric.suffix + '</b>' +
-      '<span>' + metric.label + '</span>';
+      '<span data-en="' + esc(metric.labelEn) + '">' + metric.label + '</span>';
     metricsGrid.appendChild(card);
   });
 
@@ -1613,9 +1687,9 @@
   campaignResultsData.forEach(function(result){
     var card = el("div","result-card");
     card.innerHTML =
-      '<span class="result-tag">' + result.tag + '</span>' +
-      '<h3>' + result.title + '</h3>' +
-      '<p>' + result.desc + '</p>';
+      '<span class="result-tag" data-en="' + esc(result.tagEn) + '">' + result.tag + '</span>' +
+      '<h3 data-en="' + esc(result.titleEn) + '">' + result.title + '</h3>' +
+      '<p data-en="' + esc(result.descEn) + '">' + result.desc + '</p>';
     resultsRow.appendChild(card);
   });
 
@@ -1625,13 +1699,76 @@
     var initials = t.name.split(" ").map(function(w){ return w[0]; }).join("").slice(0,2).toUpperCase();
     var card = el("div","testimonial-card");
     card.innerHTML =
-      '<p>“' + t.text + '”</p>' +
+      '<p data-en="“' + esc(t.textEn) + '”">“' + t.text + '”</p>' +
       '<div class="testimonial-who">' +
         '<span class="testimonial-avatar" aria-hidden="true">' + initials + '</span>' +
         '<div><b>' + t.name + '</b><span>' + t.company + '</span></div>' +
       '</div>';
     testimonialsGrid.appendChild(card);
   });
+
+  /* =========================================================
+     IDIOMA: português e inglês
+
+     O texto em português fica no HTML e a versão em inglês fica
+     no atributo data-en de cada elemento. Para corrigir uma
+     tradução, procure o texto em português e edite o data-en
+     que está na mesma linha.
+  ========================================================== */
+
+  var CHAVE_IDIOMA = "ugcIdioma";
+  var idiomaAtual = "pt";
+
+  var textosIdioma = {
+    pt: {
+      titulo: "Gabriella Braga | Portfólio UGC Creator",
+      abrirMenu: "Abrir menu",
+      fecharMenu: "Fechar menu",
+      capturaEnviada: "Recebido! Vou te enviar o mídia kit em breve."
+    },
+    en: {
+      titulo: "Gabriella Braga | UGC Creator Portfolio",
+      abrirMenu: "Open menu",
+      fecharMenu: "Close menu",
+      capturaEnviada: "Got it! I will send you the media kit soon."
+    }
+  };
+
+  function aplicarIdioma(idioma){
+    idiomaAtual = idioma === "en" ? "en" : "pt";
+    var ehIngles = idiomaAtual === "en";
+
+    document.documentElement.lang = ehIngles ? "en" : "pt-BR";
+    document.title = textosIdioma[idiomaAtual].titulo;
+
+    document.querySelectorAll("[data-en]").forEach(function(alvo){
+      if (alvo.dataset.pt === undefined) alvo.dataset.pt = alvo.innerHTML;
+      alvo.innerHTML = ehIngles && alvo.dataset.en ? alvo.dataset.en : alvo.dataset.pt;
+    });
+
+    document.querySelectorAll("[data-en-aria]").forEach(function(alvo){
+      if (alvo.dataset.ptAria === undefined) alvo.dataset.ptAria = alvo.getAttribute("aria-label") || "";
+      alvo.setAttribute("aria-label", ehIngles ? alvo.dataset.enAria : alvo.dataset.ptAria);
+    });
+
+    document.querySelectorAll(".lang-btn").forEach(function(btn){
+      var ativo = btn.dataset.idioma === idiomaAtual;
+      btn.classList.toggle("is-active", ativo);
+      btn.setAttribute("aria-pressed", ativo ? "true" : "false");
+    });
+
+    try { localStorage.setItem(CHAVE_IDIOMA, idiomaAtual); } catch(err){}
+  }
+
+  document.querySelectorAll(".lang-btn").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      aplicarIdioma(btn.dataset.idioma);
+    });
+  });
+
+  var idiomaSalvo = "pt";
+  try { idiomaSalvo = localStorage.getItem(CHAVE_IDIOMA) || "pt"; } catch(err){}
+  aplicarIdioma(idiomaSalvo);
 
   /* =========================================================
      MENU MOBILE
@@ -1643,7 +1780,7 @@
     var isOpen = navLinks.classList.toggle("is-open");
     navToggle.classList.toggle("is-open", isOpen);
     navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
-    navToggle.setAttribute("aria-label", isOpen ? "Fechar menu" : "Abrir menu");
+    navToggle.setAttribute("aria-label", isOpen ? textosIdioma[idiomaAtual].fecharMenu : textosIdioma[idiomaAtual].abrirMenu);
   });
 
   navLinks.querySelectorAll("a").forEach(function(link){
@@ -1783,7 +1920,7 @@
       captureForm.reportValidity();
       return;
     }
-    captureForm.innerHTML = '<p style="font-weight:700;margin:0;">Recebido! Vou te enviar o mídia kit em breve.</p>';
+    captureForm.innerHTML = '<p style="font-weight:700;margin:0;">' + textosIdioma[idiomaAtual].capturaEnviada + '</p>';
     window.setTimeout(closeCapture, 1800);
   });
 

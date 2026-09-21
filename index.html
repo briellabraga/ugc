@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Gabriella Braga — Portfólio UGC Creator</title>
+<meta name="description" content="Portfólio de Gabriella Braga, UGC Creator de Goiânia: vídeos, fotos e conteúdos autênticos para marcas de skincare, fitness, pet, viagem e tech.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f3f4f2;
+    --card:#ffffff;
+    --ink:#111214;
+    --ink-soft:#53564f;
+    --lime:#c6f24e;
+    --lime-ink:#1c2400;
+    --line:#e3e4de;
+    --shadow-sm:0 2px 10px rgba(17,18,20,.06);
+    --shadow-md:0 10px 30px rgba(17,18,20,.10);
+    --shadow-lg:0 20px 60px rgba(17,18,20,.16);
+    --radius:20px;
+    --radius-sm:12px;
+    --maxw:1180px;
+  }
+
+  *,*::before,*::after{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+  }
+
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Manrope',system-ui,-apple-system,sans-serif;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+
+  img,svg{ max-width:100%; display:block; }
+  a{ color:inherit; text-decoration:none; }
+  button{ font-family:inherit; cursor:pointer; }
+  ul{ margin:0; padding:0; list-style:none; }
+
+  .wrap{
+    max-width:var(--maxw);
+    margin:0 auto;
+    padding:0 24px;
+  }
+
+  :focus-visible{
+    outline:3px solid var(--ink);
+    outline-offset:3px;
+    border-radius:4px;
+  }
+
+  .skip-link{
+    position:absolute;
+    left:-999px;
+    top:0;
+    background:var(--lime);
+    color:var(--lime-ink);
+    padding:12px 18px;
+    border-radius:0 0 10px 0;
+    font-weight:700;
+    z-index:999;
+  }
+  .skip-link:focus{ left:0; }
+
+  /* ---------- MENU FIXO ---------- */
+  .nav{
+    position:fixed;
+    top:0; left:0; right:0;
+    z-index:500;
+    background:rgba(243,244,242,.82);
+    backdrop-filter:blur(10px) saturate(140%);
+    -webkit-backdrop-filter:blur(10px) saturate(140%);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:16px 24px;
+    max-width:var(--maxw);
+    margin:0 auto;
+  }
+  .nav-logo{
+    font-weight:800;
+    font-size:1.05rem;
+    letter-spacing:-.02em;
+  }
+  .nav-links{
+    display:flex;
+    gap:8px;
+    align-items:center;
+  }
+  .nav-links a{
+    font-weight:600;
+    font-size:.92rem;
+    padding:9px 14px;
+    border-radius:999px;
+    color:var(--ink-soft);
+    transition:background .2s, color .2s;
+  }
+  .nav-links a:hover{
+    background:var(--card);
+    color:var(--ink);
+  }
+  .nav-cta{
+    background:var(--ink) !important;
+    color:#fff !important;
+    padding:10px 18px !important;
+  }
+  .nav-cta:hover{
+    background:#2b2c2e !important;
+  }
+
+  .nav-toggle{
+    display:none;
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:10px;
+    width:44px;
+    height:44px;
+    align-items:center;
+    justify-content:center;
+    box-shadow:var(--shadow-sm);
+  }
+  .nav-toggle span,
+  .nav-toggle span::before,
+  .nav-toggle span::after{
+    content:"";
+    display:block;
+    width:20px;
+    height:2px;
+    background:var(--ink);
+    position:relative;
+    transition:transform .25s, opacity .25s;
+  }
+  .nav-toggle span::before{ position:absolute; top:-6px; }
+  .nav-toggle span::after{ position:absolute; top:6px; }
+  .nav-toggle.is-open span{ background:transparent; }
+  .nav-toggle.is-open span::before{ top:0; transform:rotate(45deg); }
+  .nav-toggle.is-open span::after{ top:0; transform:rotate(-45deg); }
+
+  /* ---------- CAPA / HERO ---------- */
+  .hero{
+    position:relative;
+    padding:150px 0 70px;
+    overflow:hidden;
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns:1.1fr .9fr;
+    gap:48px;
+    align-items:center;
+  }
+  .eyebrow{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    background:var(--card);
+    border:1px solid var(--line);
+    padding:8px 14px;
+    border-radius:999px;
+    font-size:.8rem;
+    font-weight:700;
+    color:var(--ink-soft);
+    box-shadow:var(--shadow-sm);
+    margin-bottom:22px;
+  }
+  .eyebrow .dot{
+    width:8px; height:8px; border-radius:50%;
+    background:var(--lime);
+    box-shadow:0 0 0 4px rgba(198,242,78,.35);
+  }
+  .hero h1{
+    font-size:clamp(2.6rem, 6vw, 4.4rem);
+    line-height:1.02;
+    letter-spacing:-.03em;
+    font-weight:800;
+    margin:0 0 20px;
+  }
+  .hero h1 .mark{
+    background:linear-gradient(transparent 62%, var(--lime) 62%);
+    padding:0 2px;
+  }
+  .hero p.lead{
+    font-size:1.15rem;
+    color:var(--ink-soft);
+    max-width:520px;
+    margin:0 0 32px;
+    font-weight:500;
+  }
+  .hero-actions{
+    display:flex;
+    gap:14px;
+    flex-wrap:wrap;
+    margin-bottom:44px;
+  }
+  .btn{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:15px 26px;
+    border-radius:999px;
+    font-weight:700;
+    font-size:.95rem;
+    border:1px solid transparent;
+    transition:transform .18s ease, box-shadow .18s ease, background .18s;
+  }
+  .btn:hover{ transform:translateY(-2px); }
+  .btn-primary{
+    background:var(--ink);
+    color:#fff;
+    box-shadow:var(--shadow-md);
+  }
+  .btn-primary:hover{ background:#2b2c2e; }
+  .btn-ghost{
+    background:var(--card);
+    color:var(--ink);
+    border-color:var(--line);
+    box-shadow:var(--shadow-sm);
+  }
+  .btn-lime{
+    background:var(--lime);
+    color:var(--lime-ink);
+    box-shadow:var(--shadow-md);
+  }
+
+  .hero-stats{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:18px;
+    max-width:560px;
+  }
+  .hero-stat{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+    padding:16px 14px;
+    box-shadow:var(--shadow-sm);
+  }
+  .hero-stat b{
+    display:block;
+    font-size:1.5rem;
+    font-weight:800;
+    letter-spacing:-.02em;
+  }
+  .hero-stat span{
+    font-size:.78rem;
+    color:var(--ink-soft);
+    font-weight:600;
+  }
+
+  /* ---------- FOTO FLUTUANTE (editor) ---------- */
+  .hero-visual{
+    position:relative;
+    min-height:460px;
+  }
+  .editor-frame{
+    position:relative;
+    width:100%;
+    max-width:360px;
+    margin:0 auto;
+    aspect-ratio:4/5;
+    border-radius:28px;
+    background:
+      linear-gradient(145deg,#dfe6d1,#c9d3b8 40%,#aebd93);
+    box-shadow:var(--shadow-lg);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    color:#3a3f2f;
+    font-weight:700;
+    padding:20px;
+    overflow:hidden;
+  }
+  .editor-frame::after{
+    content:"";
+    position:absolute;
+    inset:14px;
+    border:3px solid var(--lime);
+    border-radius:20px;
+    pointer-events:none;
+  }
+  .editor-frame small{
+    display:block;
+    font-weight:600;
+    font-size:.78rem;
+    margin-top:8px;
+    color:#4a4f3b;
+  }
+
+  .float-chip{
+    position:absolute;
+    background:var(--card);
+    border-radius:14px;
+    box-shadow:var(--shadow-md);
+    padding:10px 14px;
+    font-size:.82rem;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    animation:float 5s ease-in-out infinite;
+  }
+  .chip-effects{ top:6%; left:-6%; }
+  .chip-hi{
+    bottom:10%; right:-4%;
+    background:var(--ink);
+    color:#fff;
+    animation-delay:.6s;
+  }
+  .chip-toolbar{
+    top:38%; left:-14%;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    padding:12px 10px;
+    animation-delay:1.1s;
+  }
+  .chip-toolbar span{
+    width:18px; height:18px;
+    border-radius:6px;
+    background:var(--bg);
+    border:1px solid var(--line);
+  }
+  .chip-toolbar span:first-child{ background:var(--lime); border-color:var(--lime); }
+
+  .cursor-chip{
+    position:absolute;
+    top:20%;
+    right:6%;
+    width:22px;
+    height:22px;
+    animation:cursorMove 6s ease-in-out infinite;
+    filter:drop-shadow(0 3px 6px rgba(0,0,0,.25));
+  }
+
+  @keyframes float{
+    0%,100%{ transform:translateY(0) rotate(0deg); }
+    50%{ transform:translateY(-10px) rotate(-1.5deg); }
+  }
+  @keyframes cursorMove{
+    0%,100%{ transform:translate(0,0); }
+    25%{ transform:translate(-18px,14px); }
+    50%{ transform:translate(6px,30px); }
+    75%{ transform:translate(-10px,6px); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .float-chip, .cursor-chip{ animation:none; }
+  }
+
+  .timeline{
+    margin-top:26px;
+    background:var(--card);
+    border-radius:16px;
+    box-shadow:var(--shadow-md);
+    padding:14px 16px;
+    max-width:360px;
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .timeline-row{
+    display:flex;
+    gap:6px;
+    align-items:center;
+    height:26px;
+    position:relative;
+  }
+  .timeline-clip{
+    height:100%;
+    border-radius:6px;
+    background:var(--lime);
+    opacity:.85;
+  }
+  .timeline-clip:nth-child(2){ opacity:.55; }
+  .timeline-clip:nth-child(3){ opacity:.35; }
+  .timeline-head{
+    position:absolute;
+    top:-6px;
+    left:38%;
+    width:2px;
+    height:38px;
+    background:var(--ink);
+  }
+  .timeline-head::before{
+    content:"";
+    position:absolute;
+    top:-4px; left:50%;
+    transform:translateX(-50%);
+    width:10px; height:10px;
+    border-radius:50%;
+    background:var(--ink);
+  }
+
+  /* ---------- FAIXA DE MARCAS ---------- */
+  .brands-strip{
+    border-top:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+    background:var(--card);
+    padding:18px 0;
+    overflow:hidden;
+  }
+  .brands-track{
+    display:flex;
+    gap:48px;
+    width:max-content;
+    animation:scrollBrands 32s linear infinite;
+  }
+  @media (prefers-reduced-motion: reduce){
+    .brands-track{ animation:none; flex-wrap:wrap; }
+  }
+  @keyframes scrollBrands{
+    from{ transform:translateX(0); }
+    to{ transform:translateX(-50%); }
+  }
+  .brands-track span{
+    font-weight:700;
+    color:var(--ink-soft);
+    font-size:.95rem;
+    white-space:nowrap;
+    opacity:.75;
+  }
+
+  /* ---------- SEÇÕES GERAIS ---------- */
+  section{
+    padding:96px 0;
+  }
+  .section-head{
+    max-width:620px;
+    margin:0 0 48px;
+  }
+  .kicker{
+    display:inline-block;
+    font-size:.78rem;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.08em;
+    color:var(--ink-soft);
+    background:var(--card);
+    border:1px solid var(--line);
+    padding:6px 12px;
+    border-radius:999px;
+    margin-bottom:16px;
+  }
+  .section-head h2{
+    font-size:clamp(1.9rem, 4vw, 2.6rem);
+    letter-spacing:-.02em;
+    margin:0 0 12px;
+    font-weight:800;
+  }
+  .section-head p{
+    color:var(--ink-soft);
+    font-size:1.02rem;
+    margin:0;
+  }
+  .section-head h2 .mark{
+    background:linear-gradient(transparent 60%, var(--lime) 60%);
+  }
+
+  .reveal{
+    opacity:0;
+    transform:translateY(28px);
+    transition:opacity .7s ease, transform .7s ease;
+  }
+  .reveal.is-visible{
+    opacity:1;
+    transform:translateY(0);
+  }
+  @media (prefers-reduced-motion: reduce){
+    .reveal{ opacity:1; transform:none; transition:none; }
+  }
+
+  /* ---------- SOBRE ---------- */
+  .about{
+    background:var(--card);
+    border-radius:32px;
+    border:1px solid var(--line);
+    box-shadow:var(--shadow-sm);
+  }
+  .about-inner{
+    display:grid;
+    grid-template-columns:.85fr 1.15fr;
+    gap:48px;
+    align-items:center;
+    padding:56px;
+  }
+  .about-photo{
+    aspect-ratio:4/5;
+    border-radius:22px;
+    background:linear-gradient(150deg,#e7ecdb,#c6f24e 130%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    font-weight:700;
+    color:#333a1c;
+    padding:20px;
+    box-shadow:var(--shadow-md);
+  }
+  .about-text p{
+    font-size:1.08rem;
+    line-height:1.65;
+    color:var(--ink-soft);
+    margin:0 0 20px;
+  }
+  .promises{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+    margin:26px 0;
+  }
+  .promise{
+    display:flex;
+    gap:14px;
+    align-items:flex-start;
+    background:var(--bg);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:14px 16px;
+  }
+  .promise .num{
+    flex:0 0 auto;
+    width:30px; height:30px;
+    border-radius:9px;
+    background:var(--lime);
+    color:var(--lime-ink);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:800;
+    font-size:.85rem;
+  }
+  .promise p{
+    margin:0;
+    font-size:.95rem;
+    font-weight:600;
+    color:var(--ink);
+  }
+  .signature{
+    font-family:'Manrope',sans-serif;
+    font-weight:800;
+    font-size:1.6rem;
+    font-style:italic;
+    margin-top:8px;
+  }
+  .signature small{
+    display:block;
+    font-size:.8rem;
+    font-weight:600;
+    font-style:normal;
+    color:var(--ink-soft);
+    margin-top:4px;
+  }
+
+  /* ---------- DESTAQUES ---------- */
+  .highlights-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:24px;
+  }
+  .highlight-card{
+    display:block;
+    background:var(--card);
+    border-radius:var(--radius);
+    border:1px solid var(--line);
+    box-shadow:var(--shadow-sm);
+    overflow:hidden;
+    transition:transform .25s ease, box-shadow .25s ease;
+  }
+  .highlight-card:hover,
+  .highlight-card:focus-visible{
+    transform:translateY(-6px);
+    box-shadow:var(--shadow-lg);
+  }
+  .highlight-cover{
+    position:relative;
+    aspect-ratio:9/16;
+    background:linear-gradient(160deg,#dfe6d1,#a9c774 60%,#7d9a4c);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:#26301a;
+    font-weight:700;
+    text-align:center;
+    padding:16px;
+  }
+  .play-btn{
+    position:absolute;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    width:60px; height:60px;
+    border-radius:50%;
+    background:rgba(255,255,255,.92);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow:var(--shadow-md);
+  }
+  .play-btn::after{
+    content:"";
+    border-style:solid;
+    border-width:9px 0 9px 15px;
+    border-color:transparent transparent transparent var(--ink);
+    margin-left:3px;
+  }
+  .highlight-body{
+    padding:18px 20px 22px;
+  }
+  .highlight-metric{
+    font-size:1.6rem;
+    font-weight:800;
+    letter-spacing:-.02em;
+  }
+  .highlight-metric span{
+    display:block;
+    font-size:.75rem;
+    font-weight:700;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    letter-spacing:.04em;
+    margin-top:2px;
+  }
+  .highlight-title{
+    font-weight:700;
+    margin:12px 0 4px;
+    font-size:1.02rem;
+  }
+  .highlight-ctx{
+    font-size:.88rem;
+    color:var(--ink-soft);
+    margin:0;
+  }
+
+  /* ---------- TRABALHOS / GALERIA ---------- */
+  .filters{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-bottom:36px;
+  }
+  .filter-btn{
+    background:var(--card);
+    border:1px solid var(--line);
+    padding:10px 18px;
+    border-radius:999px;
+    font-weight:700;
+    font-size:.88rem;
+    color:var(--ink-soft);
+    box-shadow:var(--shadow-sm);
+    transition:background .2s, color .2s, border-color .2s;
+  }
+  .filter-btn:hover{ color:var(--ink); }
+  .filter-btn.is-active{
+    background:var(--ink);
+    color:#fff;
+    border-color:var(--ink);
+  }
+  .work-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:22px;
+  }
+  .work-card{
+    background:var(--card);
+    border-radius:var(--radius-sm);
+    border:1px solid var(--line);
+    overflow:hidden;
+    box-shadow:var(--shadow-sm);
+    transition:opacity .3s ease, transform .3s ease;
+  }
+  .work-card.is-hidden{
+    display:none;
+  }
+  .work-cover{
+    aspect-ratio:4/5;
+    background:linear-gradient(155deg,#e2e6d6,#b9cf9c 70%);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    font-weight:700;
+    color:#333c22;
+    padding:16px;
+  }
+  .work-info{
+    padding:16px 18px 20px;
+  }
+  .work-tag{
+    display:inline-block;
+    font-size:.72rem;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    background:var(--bg);
+    border:1px solid var(--line);
+    padding:4px 10px;
+    border-radius:999px;
+    color:var(--ink-soft);
+    margin-bottom:10px;
+  }
+  .work-info h3{
+    margin:0 0 6px;
+    font-size:1.02rem;
+  }
+  .work-info p{
+    margin:0;
+    font-size:.85rem;
+    color:var(--ink-soft);
+  }
+
+  /* ---------- SERVIÇOS ---------- */
+  .services-grid{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+  }
+  .service-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+    padding:28px 24px;
+    box-shadow:var(--shadow-sm);
+    transition:transform .2s ease, box-shadow .2s ease;
+  }
+  .service-card:hover{
+    transform:translateY(-4px);
+    box-shadow:var(--shadow-md);
+  }
+  .service-num{
+    font-size:.85rem;
+    font-weight:800;
+    color:var(--lime-ink);
+    background:var(--lime);
+    display:inline-flex;
+    width:32px; height:32px;
+    align-items:center;
+    justify-content:center;
+    border-radius:9px;
+    margin-bottom:18px;
+  }
+  .service-card h3{
+    margin:0 0 8px;
+    font-size:1.08rem;
+  }
+  .service-card p{
+    margin:0;
+    font-size:.9rem;
+    color:var(--ink-soft);
+    line-height:1.5;
+  }
+
+  /* ---------- NÚMEROS E DEPOIMENTOS ---------- */
+  .metrics-grid{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:20px;
+    margin-bottom:64px;
+  }
+  .metric-card{
+    background:var(--ink);
+    color:#fff;
+    border-radius:var(--radius-sm);
+    padding:28px 22px;
+    text-align:center;
+  }
+  .metric-card b{
+    display:block;
+    font-size:2.2rem;
+    font-weight:800;
+    letter-spacing:-.02em;
+    color:var(--lime);
+  }
+  .metric-card span{
+    font-size:.82rem;
+    font-weight:600;
+    color:#cfd2c8;
+  }
+
+  .results-row{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+    margin-bottom:64px;
+  }
+  .result-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+    padding:26px 22px;
+    box-shadow:var(--shadow-sm);
+  }
+  .result-card .result-tag{
+    font-size:.72rem;
+    font-weight:800;
+    text-transform:uppercase;
+    letter-spacing:.05em;
+    color:var(--ink-soft);
+    margin-bottom:10px;
+    display:block;
+  }
+  .result-card h3{
+    margin:0 0 8px;
+    font-size:1.15rem;
+  }
+  .result-card p{
+    margin:0;
+    font-size:.88rem;
+    color:var(--ink-soft);
+  }
+
+  .testimonials-grid{
+    display:grid;
+    grid-template-columns:repeat(2,1fr);
+    gap:20px;
+  }
+  .testimonial-card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius-sm);
+    padding:26px 24px;
+    box-shadow:var(--shadow-sm);
+  }
+  .testimonial-card p{
+    margin:0 0 16px;
+    font-size:.98rem;
+    line-height:1.55;
+    color:var(--ink);
+  }
+  .testimonial-who{
+    display:flex;
+    align-items:center;
+    gap:12px;
+  }
+  .testimonial-avatar{
+    width:40px; height:40px;
+    border-radius:50%;
+    background:var(--lime);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-weight:800;
+    color:var(--lime-ink);
+    font-size:.85rem;
+    flex:0 0 auto;
+  }
+  .testimonial-who b{ font-size:.9rem; }
+  .testimonial-who span{
+    display:block;
+    font-size:.78rem;
+    color:var(--ink-soft);
+  }
+
+  /* ---------- CONTATO ---------- */
+  .contact-box{
+    background:var(--ink);
+    color:#fff;
+    border-radius:32px;
+    padding:56px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:48px;
+  }
+  .contact-box .section-head h2,
+  .contact-box .section-head p{
+    color:#fff;
+  }
+  .contact-box .kicker{
+    background:rgba(255,255,255,.08);
+    border-color:rgba(255,255,255,.16);
+    color:#e6e8df;
+  }
+  .contact-links{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+    margin-top:28px;
+  }
+  .contact-link{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    background:rgba(255,255,255,.06);
+    border:1px solid rgba(255,255,255,.14);
+    padding:14px 18px;
+    border-radius:14px;
+    font-weight:700;
+    font-size:.92rem;
+    transition:background .2s;
+  }
+  .contact-link:hover{ background:rgba(255,255,255,.12); }
+  .contact-link .arrow{ color:var(--lime); }
+
+  .contact-form{
+    background:#fff;
+    color:var(--ink);
+    border-radius:22px;
+    padding:30px;
+  }
+  .form-row{
+    margin-bottom:18px;
+  }
+  .form-row label{
+    display:block;
+    font-size:.82rem;
+    font-weight:700;
+    margin-bottom:8px;
+  }
+  .form-row input,
+  .form-row textarea{
+    width:100%;
+    padding:13px 15px;
+    border-radius:11px;
+    border:1px solid var(--line);
+    background:var(--bg);
+    font-family:inherit;
+    font-size:.95rem;
+    color:var(--ink);
+  }
+  .form-row textarea{ min-height:110px; resize:vertical; }
+  .form-row input:focus,
+  .form-row textarea:focus{
+    outline:3px solid var(--lime);
+    outline-offset:1px;
+    border-color:var(--lime);
+  }
+  .form-submit{
+    width:100%;
+    justify-content:center;
+    border:none;
+  }
+  .form-note{
+    margin-top:14px;
+    font-size:.78rem;
+    color:var(--ink-soft);
+  }
+  .form-success{
+    display:none;
+    background:var(--bg);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:20px;
+    text-align:center;
+    font-weight:700;
+  }
+  .form-success.is-visible{ display:block; }
+  .form-success span{
+    display:block;
+    font-weight:600;
+    font-size:.85rem;
+    color:var(--ink-soft);
+    margin-top:6px;
+  }
+  .contact-form.is-submitted form{ display:none; }
+
+  /* ---------- RODAPÉ ---------- */
+  footer{
+    padding:48px 0 40px;
+    border-top:1px solid var(--line);
+  }
+  .footer-inner{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    flex-wrap:wrap;
+    gap:16px;
+  }
+  .footer-name{
+    font-weight:800;
+    font-size:1.05rem;
+  }
+  .footer-links{
+    display:flex;
+    gap:18px;
+  }
+  .footer-links a{
+    font-weight:600;
+    font-size:.88rem;
+    color:var(--ink-soft);
+  }
+  .footer-links a:hover{ color:var(--ink); }
+  .footer-year{
+    font-size:.82rem;
+    color:var(--ink-soft);
+  }
+
+  /* ---------- CARD DE CAPTURA (POPUP) ---------- */
+  .capture-overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(17,18,20,.55);
+    backdrop-filter:blur(4px);
+    display:none;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:1000;
+  }
+  .capture-overlay.is-visible{
+    display:flex;
+  }
+  .capture-card{
+    position:relative;
+    background:var(--card);
+    max-width:420px;
+    width:100%;
+    border-radius:24px;
+    padding:36px 32px;
+    box-shadow:var(--shadow-lg);
+    text-align:left;
+  }
+  .capture-card::before{
+    content:"";
+    position:absolute;
+    top:-10px; left:32px;
+    width:56px; height:8px;
+    border-radius:6px;
+    background:var(--lime);
+  }
+  .capture-close{
+    position:absolute;
+    top:16px; right:16px;
+    width:36px; height:36px;
+    border-radius:50%;
+    background:var(--bg);
+    border:1px solid var(--line);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:1.1rem;
+    font-weight:700;
+    line-height:1;
+  }
+  .capture-card h3{
+    margin:8px 0 8px;
+    font-size:1.35rem;
+    letter-spacing:-.01em;
+  }
+  .capture-card p{
+    margin:0 0 22px;
+    font-size:.92rem;
+    color:var(--ink-soft);
+  }
+  .capture-card .form-row{ margin-bottom:14px; }
+  .capture-card .btn{ width:100%; justify-content:center; border:none; margin-top:6px; }
+
+  /* ---------- RESPONSIVO ---------- */
+  @media (max-width: 980px){
+    .hero-grid{ grid-template-columns:1fr; }
+    .hero-visual{ order:-1; min-height:auto; margin-bottom:20px; }
+    .about-inner{ grid-template-columns:1fr; padding:36px 28px; }
+    .highlights-grid{ grid-template-columns:1fr; }
+    .work-grid{ grid-template-columns:repeat(2,1fr); }
+    .services-grid{ grid-template-columns:repeat(2,1fr); }
+    .metrics-grid{ grid-template-columns:repeat(2,1fr); }
+    .results-row{ grid-template-columns:1fr; }
+    .testimonials-grid{ grid-template-columns:1fr; }
+    .contact-box{ grid-template-columns:1fr; padding:36px 28px; border-radius:24px; }
+  }
+
+  @media (max-width: 720px){
+    .wrap{ padding:0 18px; }
+    .nav-links{
+      position:fixed;
+      top:70px; right:18px; left:18px;
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:18px;
+      box-shadow:var(--shadow-lg);
+      flex-direction:column;
+      align-items:stretch;
+      padding:14px;
+      gap:4px;
+      transform:translateY(-12px);
+      opacity:0;
+      visibility:hidden;
+      pointer-events:none;
+      transition:transform .22s ease, opacity .22s ease, visibility .22s;
+    }
+    .nav-links.is-open{
+      transform:translateY(0);
+      opacity:1;
+      visibility:visible;
+      pointer-events:auto;
+    }
+    .nav-links a{ text-align:center; padding:12px; }
+    .nav-toggle{ display:flex; }
+    .hero{ padding:130px 0 50px; }
+    .hero-actions{ flex-direction:column; }
+    .hero-stats{ grid-template-columns:1fr; }
+    .work-grid{ grid-template-columns:1fr; }
+    .services-grid{ grid-template-columns:1fr; }
+    .metrics-grid{ grid-template-columns:repeat(2,1fr); }
+    section{ padding:64px 0; }
+    .about{ border-radius:24px; }
+    .brands-track{ animation-duration:20s; }
+    .chip-toolbar{ display:none; }
+    .chip-effects{ left:2%; top:2%; }
+    .chip-hi{ right:2%; bottom:6%; }
+    .cursor-chip{ right:12%; }
+  }
+</style>
+</head>
+<body>
+<a href="#sobre" class="skip-link">Pular para o conteúdo</a>
+
+<!-- ============ MENU FIXO ============ -->
+<header class="nav">
+  <div class="nav-inner">
+    <a href="#topo" class="nav-logo">Gabriella Braga</a>
+    <nav class="nav-links" id="navLinks" aria-label="Navegação principal">
+      <a href="#sobre">Sobre</a>
+      <a href="#destaques">Destaques</a>
+      <a href="#trabalhos">Trabalhos</a>
+      <a href="#servicos">Serviços</a>
+      <a href="#numeros">Números</a>
+      <a href="#contato" class="nav-cta">Contato</a>
+    </nav>
+    <button class="nav-toggle" id="navToggle" aria-label="Abrir menu" aria-expanded="false" aria-controls="navLinks">
+      <span></span>
+    </button>
+  </div>
+</header>
+
+<main id="topo">
+
+  <!-- ============ 1. CAPA ============ -->
+  <section class="hero" id="capa" style="padding-top:150px;">
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow"><span class="dot"></span> UGC Creator disponível para novos projetos</span>
+        <h1>Gabriella Braga cria conteúdo que <span class="mark">vende</span> de verdade</h1>
+        <p class="lead">Eu transformo produtos em vídeos autênticos que param o scroll e geram resultado para marcas de skincare, fitness, pet, viagem e tech.</p>
+        <div class="hero-actions">
+          <a href="#contato" class="btn btn-primary">Falar comigo</a>
+          <a href="#trabalhos" class="btn btn-ghost">Ver os trabalhos</a>
+        </div>
+        <div class="hero-stats" id="heroStats">
+          <!-- Números da capa preenchidos via JS a partir de heroStatsData -->
+        </div>
+      </div>
+
+      <div class="hero-visual" aria-hidden="false">
+        <div class="editor-frame" role="img" aria-label="Foto de Gabriella Braga, formato retrato 4:5">
+          <!-- Troque este bloco pela sua foto real: <img src="sua-foto.jpg" alt="Gabriella Braga, UGC Creator"> -->
+          <div>
+            FOTO DA CREATOR<br>
+            <small>formato 4:5 — troque pela imagem real</small>
+          </div>
+        </div>
+        <div class="float-chip chip-effects">✨ Efeitos</div>
+        <div class="float-chip chip-hi">Oi ✌️</div>
+        <div class="float-chip chip-toolbar" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <svg class="cursor-chip" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+          <path d="M4 2L20 10L12 12L9 20L4 2Z" fill="#111214"/>
+        </svg>
+        <div class="timeline" aria-hidden="true">
+          <div class="timeline-row">
+            <div class="timeline-clip" style="width:28%"></div>
+            <div class="timeline-clip" style="width:18%"></div>
+            <div class="timeline-clip" style="width:34%"></div>
+            <div class="timeline-clip" style="width:14%"></div>
+            <div class="timeline-head"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Faixa de marcas -->
+  <div class="brands-strip">
+    <div class="brands-track" id="brandsTrack">
+      <!-- Marcas preenchidas via JS a partir de brandsData (duplicadas para o loop) -->
+    </div>
+  </div>
+
+  <!-- ============ 2. SOBRE MIM ============ -->
+  <section id="sobre">
+    <div class="wrap">
+      <div class="about reveal">
+        <div class="about-inner">
+          <div class="about-photo" role="img" aria-label="Foto de Gabriella Braga, formato quadrado">
+            <!-- Troque este bloco pela sua foto real: <img src="sua-foto-2.jpg" alt="Gabriella Braga sorrindo"> -->
+            FOTO DA CREATOR<br>4:5
+          </div>
+          <div class="about-text">
+            <span class="kicker">Sobre mim</span>
+            <p>Oi, eu sou a Gabriella! Sou UGC Creator em Goiânia e adoro transformar produtos em conteúdo que parece feito por uma amiga, não por uma propaganda. Já criei vídeos para marcas de skincare, fitness, pet, viagem e tech, sempre pensando no que faz a pessoa parar de rolar o feed e prestar atenção.</p>
+            <p>Gosto de trabalhar de forma organizada e transparente: você sabe exatamente o que vai receber, quando vai receber e pode confiar que o processo vai ser tranquilo do início ao fim.</p>
+            <ul class="promises">
+              <li class="promise">
+                <span class="num">1</span>
+                <p>Roteiro aprovado por você antes de qualquer gravação</p>
+              </li>
+              <li class="promise">
+                <span class="num">2</span>
+                <p>Uma rodada de ajuste inclusa no valor combinado</p>
+              </li>
+              <li class="promise">
+                <span class="num">3</span>
+                <p>Entrega em até 72 horas úteis após a gravação</p>
+              </li>
+            </ul>
+            <p class="signature">Gabriella Braga
+              <small>UGC Creator · Goiânia</small>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 3. CONTEÚDOS DE DESTAQUE ============ -->
+  <section id="destaques">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="kicker">Destaques</span>
+        <h2>Conteúdos que <span class="mark">performaram</span> de verdade</h2>
+        <p>Uma seleção dos vídeos com mais alcance e resultado para as marcas que confiaram no meu trabalho.</p>
+      </div>
+      <div class="highlights-grid" id="highlightsGrid">
+        <!-- Cards de destaque preenchidos via JS a partir de highlightsData -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 4. TRABALHOS POR NICHO ============ -->
+  <section id="trabalhos">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="kicker">Portfólio</span>
+        <h2>Trabalhos por <span class="mark">nicho</span></h2>
+        <p>Filtre por área de atuação e veja exemplos do meu trabalho em cada segmento.</p>
+      </div>
+      <div class="filters reveal" id="filters" role="group" aria-label="Filtrar trabalhos por nicho">
+        <!-- Botões de filtro preenchidos via JS a partir de niches -->
+      </div>
+      <div class="work-grid" id="workGrid">
+        <!-- Cards de trabalho preenchidos via JS a partir de worksData -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 5. COMO EU TE AJUDO ============ -->
+  <section id="servicos">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="kicker">Serviços</span>
+        <h2>Como eu <span class="mark">te ajudo</span></h2>
+        <p>Pacotes pensados para dar liberdade para você escolher o formato ideal para a sua marca.</p>
+      </div>
+      <div class="services-grid" id="servicesGrid">
+        <!-- Cards de serviço preenchidos via JS a partir de servicesData -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 6. NÚMEROS E DEPOIMENTOS ============ -->
+  <section id="numeros">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <span class="kicker">Resultados</span>
+        <h2>Números e <span class="mark">depoimentos</span></h2>
+        <p>O impacto real do meu conteúdo, na visão dos dados e das marcas que já trabalharam comigo.</p>
+      </div>
+
+      <div class="metrics-grid reveal" id="metricsGrid">
+        <!-- Métricas com contador preenchidas via JS a partir de metricsData -->
+      </div>
+
+      <div class="results-row reveal" id="resultsRow">
+        <!-- Resultados de campanha preenchidos via JS a partir de campaignResultsData -->
+      </div>
+
+      <div class="testimonials-grid reveal" id="testimonialsGrid">
+        <!-- Depoimentos preenchidos via JS a partir de testimonialsData -->
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ 7. BORA CRIAR JUNTOS ============ -->
+  <section id="contato">
+    <div class="wrap">
+      <div class="contact-box reveal">
+        <div>
+          <div class="section-head" style="margin-bottom:0;">
+            <span class="kicker">Contato</span>
+            <h2>Bora criar juntos?</h2>
+            <p>Me conta um pouco sobre a sua marca e o que você precisa. Respondo rapidinho!</p>
+          </div>
+          <div class="contact-links">
+            <a class="contact-link" href="https://wa.me/5562982156150" target="_blank" rel="noopener">
+              WhatsApp · (62) 98215-6150 <span class="arrow">→</span>
+            </a>
+            <a class="contact-link" href="mailto:gabriellavazbraga@gmail.com">
+              E-mail · gabriellavazbraga@gmail.com <span class="arrow">→</span>
+            </a>
+            <a class="contact-link" href="https://instagram.com/bibibriella" target="_blank" rel="noopener">
+              Instagram · @bibibriella <span class="arrow">→</span>
+            </a>
+          </div>
+        </div>
+
+        <div class="contact-form" id="contactFormWrap">
+          <form id="contactForm" novalidate>
+            <div class="form-row">
+              <label for="contactName">Nome</label>
+              <input type="text" id="contactName" name="name" autocomplete="name" required>
+            </div>
+            <div class="form-row">
+              <label for="contactEmail">E-mail</label>
+              <input type="email" id="contactEmail" name="email" autocomplete="email" required>
+            </div>
+            <div class="form-row">
+              <label for="contactMessage">Mensagem</label>
+              <textarea id="contactMessage" name="message" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-lime form-submit">Enviar mensagem</button>
+            <p class="form-note">Nenhum dado é enviado a servidores externos nesta demonstração.</p>
+          </form>
+          <div class="form-success" id="formSuccess">
+            Mensagem enviada com sucesso!
+            <span>Obrigada pelo contato, vou te responder em breve.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ 8. RODAPÉ ============ -->
+<footer>
+  <div class="wrap footer-inner">
+    <span class="footer-name">Gabriella Braga</span>
+    <div class="footer-links">
+      <a href="https://instagram.com/bibibriella" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://wa.me/5562982156150" target="_blank" rel="noopener">WhatsApp</a>
+      <a href="mailto:gabriellavazbraga@gmail.com">E-mail</a>
+    </div>
+    <span class="footer-year" id="footerYear"></span>
+  </div>
+</footer>
+
+<!-- ============ CARD DE CAPTURA ============ -->
+<div class="capture-overlay" id="captureOverlay" role="dialog" aria-modal="true" aria-labelledby="captureTitle">
+  <div class="capture-card">
+    <button class="capture-close" id="captureClose" aria-label="Fechar">✕</button>
+    <h3 id="captureTitle">Quer meu mídia kit completo?</h3>
+    <p>Deixe seu nome e e-mail que eu te envio com todos os meus números, formatos e valores.</p>
+    <form id="captureForm">
+      <div class="form-row">
+        <label for="captureName">Nome</label>
+        <input type="text" id="captureName" name="name" autocomplete="name" required>
+      </div>
+      <div class="form-row">
+        <label for="captureEmail">E-mail</label>
+        <input type="email" id="captureEmail" name="email" autocomplete="email" required>
+      </div>
+      <button type="submit" class="btn btn-lime">Quero receber</button>
+    </form>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* =========================================================
+     DADOS — edite os arrays abaixo para atualizar o site
+     sem precisar mexer no HTML.
+  ========================================================== */
+
+  // Números rápidos exibidos na primeira dobra (capa)
+  var heroStatsData = [
+    { value: 120, suffix: "+", label: "vídeos entregues" },
+    { value: 35, suffix: "+", label: "marcas atendidas" },
+    { value: 8, suffix: "M+", label: "views somadas" }
+  ];
+
+  // Nomes de marcas para a faixa da capa (troque pelos seus clientes reais)
+  var brandsData = [
+    "Marca 01","Marca 02","Marca 03","Marca 04","Marca 05","Marca 06",
+    "Marca 07","Marca 08","Marca 09","Marca 10","Marca 11","Marca 12"
+  ];
+
+  // Conteúdos de destaque (3 vídeos em evidência)
+  // link: URL do vídeo (Instagram, TikTok, YouTube etc.) — troque "#" pelo link real
+  // capa: descreva/troque o bloco de capa pela imagem real do vídeo (ver comentário no card)
+  var highlightsData = [
+    {
+      link: "#",
+      metricValue: "+2,4M",
+      metricLabel: "views no reels",
+      title: "Rotina de skincare noturna",
+      context: "Vídeo autêntico mostrando o passo a passo real do produto."
+    },
+    {
+      link: "#",
+      metricValue: "+980K",
+      metricLabel: "views no tiktok",
+      title: "Unboxing surpresa",
+      context: "Reação genuína de abertura do produto, gerou alto engajamento."
+    },
+    {
+      link: "#",
+      metricValue: "+3,1M",
+      metricLabel: "views no reels",
+      title: "Antes e depois em treino",
+      context: "Conteúdo fitness com resultado visual em poucos segundos."
+    }
+  ];
+
+  // Nichos usados nos filtros da galeria de trabalhos
+  var niches = ["Todos","Skincare","Fitness","Pet","Viagem","Tech"];
+
+  // Trabalhos por nicho (a capa é um bloco placeholder — troque pela imagem real do trabalho)
+  var worksData = [
+    { niche:"Skincare", title:"Sérum facial — resenha em vídeo", desc:"Vídeo de resenha honesta para lançamento de produto." },
+    { niche:"Skincare", title:"Rotina matinal completa", desc:"Conteúdo em formato tutorial para redes da marca." },
+    { niche:"Fitness", title:"Treino em casa com equipamento", desc:"Vídeo demonstrativo de uso do produto durante treino." },
+    { niche:"Fitness", title:"Suplemento pós-treino", desc:"Depoimento em vídeo sobre experiência de uso." },
+    { niche:"Pet", title:"Petisco natural — reação do pet", desc:"Vídeo espontâneo mostrando a reação do animal ao produto." },
+    { niche:"Pet", title:"Acessório para passeio", desc:"Conteúdo de uso real em ambiente externo." },
+    { niche:"Viagem", title:"Mala organizada com produto", desc:"Vídeo de dica prática integrando o produto à rotina de viagem." },
+    { niche:"Viagem", title:"Diário de bordo patrocinado", desc:"Série curta mostrando o produto em uso durante a viagem." },
+    { niche:"Tech", title:"Unboxing de gadget", desc:"Vídeo de unboxing com primeiras impressões." },
+    { niche:"Tech", title:"Review de aplicativo", desc:"Conteúdo explicando funcionalidades na prática." },
+    { niche:"Skincare", title:"Comparativo de texturas", desc:"Vídeo close-up mostrando textura e aplicação do produto." },
+    { niche:"Fitness", title:"Desafio de 7 dias", desc:"Série de vídeos curtos acompanhando o uso do produto." }
+  ];
+
+  // Serviços oferecidos
+  var servicesData = [
+    { num:"01", title:"Vídeo UGC", desc:"Vídeo autêntico gravado por mim, pronto para suas redes ou anúncios." },
+    { num:"02", title:"Corte para anúncio", desc:"Edição otimizada para performance em campanhas pagas." },
+    { num:"03", title:"Fotos do produto", desc:"Conjunto de fotos em alta qualidade para uso comercial." },
+    { num:"04", title:"Unboxing", desc:"Vídeo de abertura e primeira impressão real do produto." },
+    { num:"05", title:"Publicação no meu perfil", desc:"Conteúdo publicado no meu Instagram, alcançando minha audiência." },
+    { num:"06", title:"Pacote mensal", desc:"Produção recorrente de conteúdo para manter sua marca sempre ativa." }
+  ];
+
+  // Métricas com contador animado
+  var metricsData = [
+    { value:120, suffix:"+", label:"vídeos entregues" },
+    { value:35, suffix:"+", label:"marcas atendidas" },
+    { value:8, suffix:"M+", label:"views somadas" },
+    { value:98, suffix:"%", label:"clientes satisfeitos" }
+  ];
+
+  // Resultados de campanha
+  var campaignResultsData = [
+    { tag:"Skincare", title:"+40% de cliques", desc:"Campanha em reels gerou aumento expressivo de tráfego para o site da marca." },
+    { tag:"Fitness", title:"+2,4M de alcance", desc:"Vídeo único ultrapassou a meta de visualizações em uma semana." },
+    { tag:"Pet", title:"+300 comentários", desc:"Conteúdo espontâneo gerou alto volume de interação orgânica." }
+  ];
+
+  // Depoimentos de clientes
+  var testimonialsData = [
+    { text:"A Gabriella entregou um vídeo muito além do esperado, com uma naturalidade que fez toda a diferença nos resultados.", name:"Cliente 01", company:"Empresa 01" },
+    { text:"Processo tranquilo do roteiro à entrega, e o conteúdo performou muito bem nos nossos anúncios.", name:"Cliente 02", company:"Empresa 02" },
+    { text:"Profissional organizada, pontual e com um olhar ótimo para o que funciona nas redes sociais.", name:"Cliente 03", company:"Empresa 03" },
+    { text:"Recontratamos porque o retorno em engajamento foi visivelmente maior com os vídeos dela.", name:"Cliente 04", company:"Empresa 04" }
+  ];
+
+  /* =========================================================
+     RENDERIZAÇÃO
+  ========================================================== */
+
+  function el(tag, className, html){
+    var e = document.createElement(tag);
+    if (className) e.className = className;
+    if (html !== undefined) e.innerHTML = html;
+    return e;
+  }
+
+  // Capa — números rápidos
+  var heroStatsEl = document.getElementById("heroStats");
+  heroStatsData.forEach(function(stat){
+    var card = el("div","hero-stat");
+    card.innerHTML = '<b class="js-counter" data-target="'+stat.value+'" data-suffix="'+stat.suffix+'">0'+stat.suffix+'</b><span>'+stat.label+'</span>';
+    heroStatsEl.appendChild(card);
+  });
+
+  // Faixa de marcas (duplicada para permitir o loop contínuo)
+  var brandsTrack = document.getElementById("brandsTrack");
+  var brandsDouble = brandsData.concat(brandsData);
+  brandsDouble.forEach(function(name){
+    brandsTrack.appendChild(el("span", null, name));
+  });
+
+  // Destaques
+  var highlightsGrid = document.getElementById("highlightsGrid");
+  highlightsData.forEach(function(item){
+    var a = el("a","highlight-card reveal");
+    a.href = item.link;
+    a.target = "_blank";
+    a.rel = "noopener";
+    a.setAttribute("aria-label", item.title + " — abrir vídeo");
+    a.innerHTML =
+      '<div class="highlight-cover" role="img" aria-label="Capa vertical 9:16 do vídeo: ' + item.title + '">' +
+        /* Troque este div pela capa real do vídeo: <img src="capa.jpg" alt="..."> */
+        '<span>CAPA DO VÍDEO<br><small style="font-weight:600;font-size:.75rem;">formato 9:16</small></span>' +
+        '<span class="play-btn" aria-hidden="true"></span>' +
+      '</div>' +
+      '<div class="highlight-body">' +
+        '<div class="highlight-metric">' + item.metricValue + '<span>' + item.metricLabel + '</span></div>' +
+        '<h3 class="highlight-title">' + item.title + '</h3>' +
+        '<p class="highlight-ctx">' + item.context + '</p>' +
+      '</div>';
+    highlightsGrid.appendChild(a);
+  });
+
+  // Filtros de nicho
+  var filtersEl = document.getElementById("filters");
+  var workGrid = document.getElementById("workGrid");
+
+  niches.forEach(function(niche, i){
+    var btn = el("button","filter-btn" + (i===0 ? " is-active" : ""), niche);
+    btn.type = "button";
+    btn.dataset.niche = niche;
+    btn.addEventListener("click", function(){
+      filtersEl.querySelectorAll(".filter-btn").forEach(function(b){ b.classList.remove("is-active"); });
+      btn.classList.add("is-active");
+      filterWorks(niche);
+    });
+    filtersEl.appendChild(btn);
+  });
+
+  worksData.forEach(function(work){
+    var card = el("article","work-card reveal");
+    card.dataset.niche = work.niche;
+    card.innerHTML =
+      '<div class="work-cover" role="img" aria-label="Imagem do trabalho: ' + work.title + '">' +
+        /* Troque este div pela imagem real do trabalho: <img src="trabalho.jpg" alt="..."> */
+        'FOTO DO TRABALHO' +
+      '</div>' +
+      '<div class="work-info">' +
+        '<span class="work-tag">' + work.niche + '</span>' +
+        '<h3>' + work.title + '</h3>' +
+        '<p>' + work.desc + '</p>' +
+      '</div>';
+    workGrid.appendChild(card);
+  });
+
+  function filterWorks(niche){
+    workGrid.querySelectorAll(".work-card").forEach(function(card){
+      if (niche === "Todos" || card.dataset.niche === niche){
+        card.classList.remove("is-hidden");
+      } else {
+        card.classList.add("is-hidden");
+      }
+    });
+  }
+
+  // Serviços
+  var servicesGrid = document.getElementById("servicesGrid");
+  servicesData.forEach(function(service){
+    var card = el("div","service-card reveal");
+    card.innerHTML =
+      '<span class="service-num">' + service.num + '</span>' +
+      '<h3>' + service.title + '</h3>' +
+      '<p>' + service.desc + '</p>';
+    servicesGrid.appendChild(card);
+  });
+
+  // Métricas
+  var metricsGrid = document.getElementById("metricsGrid");
+  metricsData.forEach(function(metric){
+    var card = el("div","metric-card");
+    card.innerHTML =
+      '<b class="js-counter" data-target="' + metric.value + '" data-suffix="' + metric.suffix + '">0' + metric.suffix + '</b>' +
+      '<span>' + metric.label + '</span>';
+    metricsGrid.appendChild(card);
+  });
+
+  // Resultados de campanha
+  var resultsRow = document.getElementById("resultsRow");
+  campaignResultsData.forEach(function(result){
+    var card = el("div","result-card");
+    card.innerHTML =
+      '<span class="result-tag">' + result.tag + '</span>' +
+      '<h3>' + result.title + '</h3>' +
+      '<p>' + result.desc + '</p>';
+    resultsRow.appendChild(card);
+  });
+
+  // Depoimentos
+  var testimonialsGrid = document.getElementById("testimonialsGrid");
+  testimonialsData.forEach(function(t){
+    var initials = t.name.split(" ").map(function(w){ return w[0]; }).join("").slice(0,2).toUpperCase();
+    var card = el("div","testimonial-card");
+    card.innerHTML =
+      '<p>“' + t.text + '”</p>' +
+      '<div class="testimonial-who">' +
+        '<span class="testimonial-avatar" aria-hidden="true">' + initials + '</span>' +
+        '<div><b>' + t.name + '</b><span>' + t.company + '</span></div>' +
+      '</div>';
+    testimonialsGrid.appendChild(card);
+  });
+
+  /* =========================================================
+     MENU MOBILE
+  ========================================================== */
+  var navToggle = document.getElementById("navToggle");
+  var navLinks = document.getElementById("navLinks");
+
+  navToggle.addEventListener("click", function(){
+    var isOpen = navLinks.classList.toggle("is-open");
+    navToggle.classList.toggle("is-open", isOpen);
+    navToggle.setAttribute("aria-expanded", isOpen ? "true" : "false");
+    navToggle.setAttribute("aria-label", isOpen ? "Fechar menu" : "Abrir menu");
+  });
+
+  navLinks.querySelectorAll("a").forEach(function(link){
+    link.addEventListener("click", function(){
+      navLinks.classList.remove("is-open");
+      navToggle.classList.remove("is-open");
+      navToggle.setAttribute("aria-expanded", "false");
+    });
+  });
+
+  /* =========================================================
+     ANIMAÇÃO DE ENTRADA (IntersectionObserver)
+  ========================================================== */
+  var prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  if (!prefersReducedMotion && "IntersectionObserver" in window){
+    var revealObserver = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting){
+          entry.target.classList.add("is-visible");
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.08, rootMargin: "0px 0px -40px 0px" });
+
+    document.querySelectorAll(".reveal").forEach(function(target){
+      revealObserver.observe(target);
+    });
+  } else {
+    document.querySelectorAll(".reveal").forEach(function(target){
+      target.classList.add("is-visible");
+    });
+  }
+
+  /* =========================================================
+     CONTADOR ANIMADO
+  ========================================================== */
+  function animateCounter(node){
+    var target = parseFloat(node.dataset.target);
+    var suffix = node.dataset.suffix || "";
+    if (prefersReducedMotion){
+      node.textContent = target + suffix;
+      return;
+    }
+    var duration = 1400;
+    var start = null;
+
+    function step(timestamp){
+      if (start === null) start = timestamp;
+      var progress = Math.min((timestamp - start) / duration, 1);
+      var eased = 1 - Math.pow(1 - progress, 3);
+      var current = Math.round(target * eased);
+      node.textContent = current + suffix;
+      if (progress < 1){
+        window.requestAnimationFrame(step);
+      } else {
+        node.textContent = target + suffix;
+      }
+    }
+    window.requestAnimationFrame(step);
+  }
+
+  var counterNodes = document.querySelectorAll(".js-counter");
+  if ("IntersectionObserver" in window){
+    var counterObserver = new IntersectionObserver(function(entries){
+      entries.forEach(function(entry){
+        if (entry.isIntersecting){
+          animateCounter(entry.target);
+          counterObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    counterNodes.forEach(function(node){ counterObserver.observe(node); });
+  } else {
+    counterNodes.forEach(animateCounter);
+  }
+
+  /* =========================================================
+     FORMULÁRIO DE CONTATO
+  ========================================================== */
+  var contactForm = document.getElementById("contactForm");
+  var contactFormWrap = document.getElementById("contactFormWrap");
+  var formSuccess = document.getElementById("formSuccess");
+
+  contactForm.addEventListener("submit", function(e){
+    e.preventDefault();
+    if (!contactForm.checkValidity()){
+      contactForm.reportValidity();
+      return;
+    }
+    contactFormWrap.classList.add("is-submitted");
+    formSuccess.classList.add("is-visible");
+  });
+
+  /* =========================================================
+     CARD DE CAPTURA (popup)
+  ========================================================== */
+  var captureOverlay = document.getElementById("captureOverlay");
+  var captureClose = document.getElementById("captureClose");
+  var captureForm = document.getElementById("captureForm");
+  var STORAGE_KEY = "ugcCaptureShown";
+
+  function openCapture(){
+    if (sessionStorage.getItem(STORAGE_KEY)) return;
+    captureOverlay.classList.add("is-visible");
+    sessionStorage.setItem(STORAGE_KEY, "1");
+    var firstInput = document.getElementById("captureName");
+    if (firstInput) firstInput.focus();
+  }
+
+  function closeCapture(){
+    captureOverlay.classList.remove("is-visible");
+  }
+
+  try {
+    if (!sessionStorage.getItem(STORAGE_KEY)){
+      window.setTimeout(openCapture, 7000);
+    }
+  } catch(err){
+    window.setTimeout(function(){
+      captureOverlay.classList.add("is-visible");
+    }, 7000);
+  }
+
+  captureClose.addEventListener("click", closeCapture);
+  captureOverlay.addEventListener("click", function(e){
+    if (e.target === captureOverlay) closeCapture();
+  });
+  document.addEventListener("keydown", function(e){
+    if (e.key === "Escape" && captureOverlay.classList.contains("is-visible")){
+      closeCapture();
+    }
+  });
+  captureForm.addEventListener("submit", function(e){
+    e.preventDefault();
+    if (!captureForm.checkValidity()){
+      captureForm.reportValidity();
+      return;
+    }
+    captureForm.innerHTML = '<p style="font-weight:700;margin:0;">Recebido! Vou te enviar o mídia kit em breve.</p>';
+    window.setTimeout(closeCapture, 1800);
+  });
+
+  /* =========================================================
+     RODAPÉ — ano automático
+  ========================================================== */
+  document.getElementById("footerYear").textContent = "© " + new Date().getFullYear() + " Gabriella Braga";
+
+})();
+</script>
+</body>
+</html>

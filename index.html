@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Gabriella Braga — Portfólio UGC Creator</title>
+<title>Gabriella Braga | Portfólio UGC Creator</title>
 <meta name="description" content="Portfólio de Gabriella Braga, UGC Creator de Goiânia: vídeos, fotos e conteúdos autênticos para marcas de skincare, fitness, pet, viagem e tech.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1160,7 +1160,7 @@
           <!-- Troque este bloco pela sua foto real: <img src="sua-foto.jpg" alt="Gabriella Braga, UGC Creator"> -->
           <div>
             FOTO DA CREATOR<br>
-            <small>formato 4:5 — troque pela imagem real</small>
+            <small>formato 4:5, troque pela imagem real</small>
           </div>
         </div>
         <div class="float-chip chip-effects">✨ Efeitos</div>
@@ -1384,7 +1384,16 @@
   "use strict";
 
   /* =========================================================
-     DADOS — edite os arrays abaixo para atualizar o site
+     SEÇÕES LIGADAS E DESLIGADAS
+     Troque para false e a seção some do site junto com o link
+     dela no menu. Troque de volta para true e ela reaparece
+     inteira, sem precisar apagar nada.
+  ========================================================== */
+
+  var mostrarNumerosEDepoimentos = false;
+
+  /* =========================================================
+     DADOS: edite os arrays abaixo para atualizar o site
      sem precisar mexer no HTML.
   ========================================================== */
 
@@ -1402,7 +1411,7 @@
   ];
 
   // Conteúdos de destaque (3 vídeos em evidência)
-  // link: URL do vídeo (Instagram, TikTok, YouTube etc.) — troque "#" pelo link real
+  // link: URL do vídeo (Instagram, TikTok, YouTube etc.), troque "#" pelo link real
   // capa: descreva/troque o bloco de capa pela imagem real do vídeo (ver comentário no card)
   var highlightsData = [
     {
@@ -1431,13 +1440,13 @@
   // Nichos usados nos filtros da galeria de trabalhos
   var niches = ["Todos","Skincare","Fitness","Pet","Viagem","Tech"];
 
-  // Trabalhos por nicho (a capa é um bloco placeholder — troque pela imagem real do trabalho)
+  // Trabalhos por nicho (a capa é um bloco placeholder, troque pela imagem real do trabalho)
   var worksData = [
-    { niche:"Skincare", title:"Sérum facial — resenha em vídeo", desc:"Vídeo de resenha honesta para lançamento de produto." },
+    { niche:"Skincare", title:"Sérum facial: resenha em vídeo", desc:"Vídeo de resenha honesta para lançamento de produto." },
     { niche:"Skincare", title:"Rotina matinal completa", desc:"Conteúdo em formato tutorial para redes da marca." },
     { niche:"Fitness", title:"Treino em casa com equipamento", desc:"Vídeo demonstrativo de uso do produto durante treino." },
     { niche:"Fitness", title:"Suplemento pós-treino", desc:"Depoimento em vídeo sobre experiência de uso." },
-    { niche:"Pet", title:"Petisco natural — reação do pet", desc:"Vídeo espontâneo mostrando a reação do animal ao produto." },
+    { niche:"Pet", title:"Petisco natural: reação do pet", desc:"Vídeo espontâneo mostrando a reação do animal ao produto." },
     { niche:"Pet", title:"Acessório para passeio", desc:"Conteúdo de uso real em ambiente externo." },
     { niche:"Viagem", title:"Mala organizada com produto", desc:"Vídeo de dica prática integrando o produto à rotina de viagem." },
     { niche:"Viagem", title:"Diário de bordo patrocinado", desc:"Série curta mostrando o produto em uso durante a viagem." },
@@ -1491,7 +1500,14 @@
     return e;
   }
 
-  // Capa — números rápidos
+  // Aplica o interruptor de seções definido lá em cima
+  if (!mostrarNumerosEDepoimentos){
+    document.getElementById("numeros").style.display = "none";
+    var linkNumeros = document.querySelector('.nav-links a[href="#numeros"]');
+    if (linkNumeros) linkNumeros.style.display = "none";
+  }
+
+  // Capa: números rápidos
   var heroStatsEl = document.getElementById("heroStats");
   heroStatsData.forEach(function(stat){
     var card = el("div","hero-stat");
@@ -1513,7 +1529,7 @@
     a.href = item.link;
     a.target = "_blank";
     a.rel = "noopener";
-    a.setAttribute("aria-label", item.title + " — abrir vídeo");
+    a.setAttribute("aria-label", item.title + ", abrir vídeo");
     a.innerHTML =
       '<div class="highlight-cover" role="img" aria-label="Capa vertical 9:16 do vídeo: ' + item.title + '">' +
         /* Troque este div pela capa real do vídeo: <img src="capa.jpg" alt="..."> */
@@ -1771,7 +1787,7 @@
   });
 
   /* =========================================================
-     RODAPÉ — ano automático
+     RODAPÉ: ano automático
   ========================================================== */
   document.getElementById("footerYear").textContent = "© " + new Date().getFullYear() + " Gabriella Braga";
 

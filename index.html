@@ -7,7 +7,7 @@
 <meta name="description" content="Portfólio de Gabriella Braga, UGC Creator de Goiânia: vídeos, fotos e conteúdos autênticos para marcas de skincare, fitness, pet, viagem e tech.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Asap:wght@600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
   :root{
     --bg:#f3f4f2;
@@ -80,6 +80,11 @@
     -webkit-backdrop-filter:blur(10px) saturate(140%);
     border-bottom:1px solid var(--line);
   }
+  /* Fonte do cabeçalho. Para trocar pela Statos é preciso a licença web
+     do designer (deFharo): troque 'Asap' pelo nome da fonte licenciada. */
+  .nav{
+    font-family:'Asap','Manrope',system-ui,sans-serif;
+  }
   .nav-inner{
     display:flex;
     align-items:center;
@@ -89,9 +94,10 @@
     margin:0 auto;
   }
   .nav-logo{
-    font-weight:800;
+    font-weight:700;
     font-size:1.05rem;
-    letter-spacing:-.02em;
+    letter-spacing:.04em;
+    text-transform:uppercase;
   }
   .nav-links{
     display:flex;
@@ -100,10 +106,12 @@
   }
   .nav-links a{
     font-weight:600;
-    font-size:.92rem;
+    font-size:.95rem;
     padding:9px 14px;
     border-radius:999px;
     color:var(--ink-soft);
+    text-transform:lowercase;
+    letter-spacing:.01em;
     transition:background .2s, color .2s;
   }
   .nav-links a:hover{

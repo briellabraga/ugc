@@ -45,18 +45,18 @@ window.Banco = (function(){
     var mensagem = (erro && erro.message) || "";
 
     if (codigo === "42P01" || /does not exist|not find the table|schema cache/i.test(mensagem)){
-      return "A tabela \"" + rotulo + "\" ainda nao existe no banco. Rode o arquivo banco.sql no Supabase.";
+      return "A tabela \"" + rotulo + "\" ainda não existe no banco. Rode o arquivo banco.sql no Supabase.";
     }
     if (codigo === "42703" || /column .* does not exist/i.test(mensagem)){
       return "Falta uma coluna na tabela \"" + rotulo + "\". Rode o arquivo banco.sql de novo no Supabase.";
     }
     if (codigo === "42501" || /row-level security|permission denied/i.test(mensagem)){
-      return "Sem permissao para acessar \"" + rotulo + "\". Confira se voce entrou com o e-mail certo.";
+      return "Sem permissão para acessar \"" + rotulo + "\". Confira se você entrou com o e-mail certo.";
     }
     if (/Failed to fetch|NetworkError/i.test(mensagem)){
-      return "Nao consegui falar com o banco agora. Confira a sua internet.";
+      return "Não consegui falar com o banco agora. Confira a sua internet.";
     }
-    return "Nao consegui carregar \"" + rotulo + "\" agora.";
+    return "Não consegui carregar \"" + rotulo + "\" agora.";
   }
 
   /* Executa uma operacao no banco sem nunca derrubar a pagina.
@@ -64,7 +64,7 @@ window.Banco = (function(){
      uma frase em portugues e "dados" vem com a reserva combinada. */
   async function consulta(rotulo, executar, reserva){
     if (!cliente){
-      var falta = "A biblioteca do banco nao carregou. Confira a sua internet e recarregue a pagina.";
+      var falta = "A conexão com o banco não carregou. Confira a sua internet e recarregue a página.";
       avisar(falta);
       return { dados: reserva === undefined ? [] : reserva, erro: falta };
     }

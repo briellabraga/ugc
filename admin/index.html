@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Painel | Gabriella Braga</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Asap:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+
+<!-- Enquanto a sessao nao for conferida, so isto aparece.
+     O painel abaixo fica escondido ate a conferencia terminar. -->
+<div id="portao" class="carregando-tela">Conferindo o seu acesso...</div>
+
+<div class="app" id="app" hidden>
+
+  <aside class="menu">
+    <div class="menu-topo">
+      <div class="menu-marca">Gabriella Braga</div>
+      <div class="menu-sub">painel</div>
+    </div>
+
+    <nav class="menu-corpo" id="menuCorpo" aria-label="Seções do painel"></nav>
+
+    <div class="menu-pe">
+      <div class="menu-email" id="menuEmail"></div>
+      <button type="button" class="botao-sair" id="botaoSair">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/>
+        </svg>
+        Sair
+      </button>
+    </div>
+  </aside>
+
+  <div class="veu" id="veu"></div>
+
+  <main class="conteudo">
+    <div class="cabecalho">
+      <div>
+        <h1 id="tituloAba">Painel</h1>
+        <p id="subtituloAba"></p>
+      </div>
+      <button type="button" class="abrir-menu" id="abrirMenu" aria-label="Abrir menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+          <path d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+    </div>
+
+    <div id="avisos"></div>
+    <div id="areaAba"></div>
+  </main>
+</div>
+
+<!-- Janela usada por todas as abas para adicionar e editar -->
+<div class="janela" id="janela" role="dialog" aria-modal="true" aria-labelledby="janelaTitulo">
+  <div class="janela-caixa">
+    <div class="janela-topo">
+      <h2 id="janelaTitulo"></h2>
+      <button type="button" class="janela-fechar" id="janelaFechar" aria-label="Fechar">
+        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true">
+          <path d="M18 6 6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <div class="janela-corpo" id="janelaCorpo"></div>
+    <div class="janela-pe" id="janelaPe"></div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="../js/banco.js"></script>
+<script src="../js/biblioteca.js"></script>
+<script src="../js/admin.js"></script>
+<script src="../js/aba-portfolio.js"></script>
+<script src="../js/aba-marcas.js"></script>
+<script src="../js/aba-calendario.js"></script>
+<script src="../js/aba-campanhas.js"></script>
+<script src="../js/aba-checklist.js"></script>
+<script>
+  /* A conferencia da sessao acontece aqui dentro, antes de
+     qualquer coisa aparecer na tela. */
+  window.Admin.iniciar();
+</script>
+</body>
+</html>

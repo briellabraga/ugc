@@ -978,6 +978,19 @@
     font-size:.78rem;
     color:var(--ink-soft);
   }
+  .form-erro{
+    display:none;
+    margin-top:14px;
+    background:#fdecea;
+    color:#b3261e;
+    border-radius:11px;
+    padding:12px 14px;
+    font-size:.82rem;
+    font-weight:600;
+    line-height:1.5;
+  }
+  .form-erro.is-visible{ display:block; }
+  .form-erro a{ text-decoration:underline; }
   .form-success{
     display:none;
     background:var(--bg);
@@ -1369,7 +1382,9 @@
               <textarea id="contactMessage" name="message" required></textarea>
             </div>
             <button type="submit" class="btn btn-lime form-submit" data-en="Send message">Enviar mensagem</button>
-            <p class="form-note" data-en="No data is sent to external servers in this demo.">Nenhum dado é enviado a servidores externos nesta demonstração.</p>
+            <p class="form-erro" id="formErro" role="alert"
+               data-en="I could not send your message right now. Please talk to me on &lt;a href=&quot;https://wa.me/5562982156150&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;WhatsApp&lt;/a&gt; or by e-mail at &lt;a href=&quot;mailto:gabriellavazbraga@gmail.com&quot;&gt;gabriellavazbraga@gmail.com&lt;/a&gt;.">Não consegui enviar a sua mensagem agora. Fale comigo no <a href="https://wa.me/5562982156150" target="_blank" rel="noopener">WhatsApp</a> ou pelo e-mail <a href="mailto:gabriellavazbraga@gmail.com">gabriellavazbraga@gmail.com</a>.</p>
+            <p class="form-note" data-en="Your message goes straight to me. I reply quickly.">A sua mensagem chega direto para mim. Respondo rapidinho.</p>
           </form>
           <div class="form-success" id="formSuccess" data-en="Message sent!&lt;span&gt;Thank you for reaching out, I will get back to you soon.&lt;/span&gt;">
             Mensagem enviada com sucesso!
@@ -1414,6 +1429,12 @@
     </form>
   </div>
 </div>
+
+<!-- Conexão com o banco, usada para ler os vídeos, receber o
+     formulário e contar a visita. A chave que está no banco.js
+     é a pública, pode ficar no GitHub sem problema. -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="js/banco.js"></script>
 
 <script>
 (function(){
@@ -1589,7 +1610,9 @@
 
   // Destaques
   var highlightsGrid = document.getElementById("highlightsGrid");
-  highlightsData.forEach(function(item){
+  function renderizarDestaques(lista){
+  highlightsGrid.innerHTML = "";
+  lista.forEach(function(item){
     var a = el("a","highlight-card reveal");
     a.href = item.link;
     a.target = "_blank";
@@ -1611,16 +1634,22 @@
       '</div>';
     highlightsGrid.appendChild(a);
   });
+  }
+  renderizarDestaques(highlightsData);
 
   // Filtros de nicho
   var filtersEl = document.getElementById("filters");
   var workGrid = document.getElementById("workGrid");
 
+  function renderizarTrabalhos(listaTrabalhos, listaNichos){
+  filtersEl.innerHTML = "";
+  workGrid.innerHTML = "";
+
   // Guarda o rótulo de cada nicho nos dois idiomas, para as etiquetas dos cards
   var rotulosNicho = {};
-  niches.forEach(function(niche){ rotulosNicho[niche.id] = niche; });
+  listaNichos.forEach(function(niche){ rotulosNicho[niche.id] = niche; });
 
-  niches.forEach(function(niche, i){
+  listaNichos.forEach(function(niche, i){
     var btn = el("button","filter-btn" + (i===0 ? " is-active" : ""), niche.pt);
     btn.type = "button";
     btn.dataset.niche = niche.id;
@@ -1633,7 +1662,7 @@
     filtersEl.appendChild(btn);
   });
 
-  worksData.forEach(function(work){
+  listaTrabalhos.forEach(function(work){
     var card = el("article","work-card reveal");
     var rotulo = rotulosNicho[work.niche] || { pt: work.niche, en: work.niche };
     card.dataset.niche = work.niche;
@@ -1650,6 +1679,8 @@
       '</div>';
     workGrid.appendChild(card);
   });
+  }
+  renderizarTrabalhos(worksData, niches);
 
   function filterWorks(niche){
     workGrid.querySelectorAll(".work-card").forEach(function(card){
@@ -1796,8 +1827,9 @@
   ========================================================== */
   var prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
+  var revealObserver = null;
   if (!prefersReducedMotion && "IntersectionObserver" in window){
-    var revealObserver = new IntersectionObserver(function(entries){
+    revealObserver = new IntersectionObserver(function(entries){
       entries.forEach(function(entry){
         if (entry.isIntersecting){
           entry.target.classList.add("is-visible");
@@ -1805,15 +1837,17 @@
         }
       });
     }, { threshold: 0.08, rootMargin: "0px 0px -40px 0px" });
+  }
 
-    document.querySelectorAll(".reveal").forEach(function(target){
-      revealObserver.observe(target);
-    });
-  } else {
-    document.querySelectorAll(".reveal").forEach(function(target){
-      target.classList.add("is-visible");
+  /* Liga a animação de entrada. Pode ser chamada de novo depois que
+     os vídeos do banco chegarem e os cards forem montados de novo. */
+  function ativarRevelacao(){
+    document.querySelectorAll(".reveal:not(.is-visible)").forEach(function(alvo){
+      if (revealObserver) revealObserver.observe(alvo);
+      else alvo.classList.add("is-visible");
     });
   }
+  ativarRevelacao();
 
   /* =========================================================
      CONTADOR ANIMADO
@@ -1865,14 +1899,48 @@
   var contactFormWrap = document.getElementById("contactFormWrap");
   var formSuccess = document.getElementById("formSuccess");
 
-  contactForm.addEventListener("submit", function(e){
+  var formErro = document.getElementById("formErro");
+
+  contactForm.addEventListener("submit", async function(e){
     e.preventDefault();
     if (!contactForm.checkValidity()){
       contactForm.reportValidity();
       return;
     }
-    contactFormWrap.classList.add("is-submitted");
-    formSuccess.classList.add("is-visible");
+
+    formErro.classList.remove("is-visible");
+
+    var botao = contactForm.querySelector(".form-submit");
+    var textoOriginal = botao.textContent;
+    botao.disabled = true;
+    botao.textContent = idiomaAtual === "en" ? "Sending..." : "Enviando...";
+
+    /* Cada mensagem do formulário vira um contato novo na minha
+       base de marcas, já entrando como Lead. */
+    var deuCerto = false;
+    if (window.Banco && window.Banco.cliente){
+      try {
+        var resposta = await window.Banco.cliente.from("marcas").insert({
+          nome: document.getElementById("contactName").value.trim(),
+          email: document.getElementById("contactEmail").value.trim(),
+          obs: document.getElementById("contactMessage").value.trim(),
+          situacao: "Lead"
+        });
+        deuCerto = !resposta.error;
+      } catch (falha){
+        deuCerto = false;
+      }
+    }
+
+    botao.disabled = false;
+    botao.textContent = textoOriginal;
+
+    if (deuCerto){
+      contactFormWrap.classList.add("is-submitted");
+      formSuccess.classList.add("is-visible");
+    } else {
+      formErro.classList.add("is-visible");
+    }
   });
 
   /* =========================================================
@@ -1928,6 +1996,99 @@
      RODAPÉ: ano automático
   ========================================================== */
   document.getElementById("footerYear").textContent = "© " + new Date().getFullYear() + " Gabriella Braga";
+
+  /* =========================================================
+     LIGAÇÃO COM O PAINEL
+
+     Os vídeos vêm da tabela videos do banco, então quando você
+     edita no painel o site muda sozinho, sem publicar de novo.
+     Se o banco estiver fora do ar ou a tabela ainda não existir,
+     o site continua mostrando o conteúdo escrito aqui em cima,
+     em vez de aparecer vazio.
+  ========================================================== */
+
+  /* Separa "2,4M views" em número forte e rótulo. */
+  function partirDestaque(texto){
+    var limpo = String(texto || "").trim();
+    if (!limpo) return { valor:"", rotulo:"" };
+    var espaco = limpo.indexOf(" ");
+    if (espaco === -1) return { valor: limpo, rotulo: "" };
+    return { valor: limpo.slice(0, espaco), rotulo: limpo.slice(espaco + 1) };
+  }
+
+  async function carregarVideosDoBanco(){
+    if (!window.Banco || !window.Banco.cliente) return;
+
+    var lista;
+    try {
+      var resposta = await window.Banco.cliente
+        .from("videos")
+        .select("titulo,link,nicho,formato,marca,destaque,ordem")
+        .eq("visivel", true)
+        .order("ordem", { ascending: true });
+      if (resposta.error || !resposta.data || !resposta.data.length) return;
+      lista = resposta.data;
+    } catch (falha){
+      return;
+    }
+
+    /* Trabalhos por nicho: monta os filtros a partir dos nichos
+       que realmente existem nos seus vídeos. */
+    var nichosEncontrados = [];
+    lista.forEach(function(v){
+      var n = String(v.nicho || "").trim();
+      if (n && nichosEncontrados.indexOf(n) === -1) nichosEncontrados.push(n);
+    });
+
+    var listaNichos = [{ id:"Todos", pt:"Todos", en:"All" }].concat(
+      nichosEncontrados.map(function(n){
+        return niches.filter(function(x){ return x.id === n; })[0] || { id:n, pt:n, en:n };
+      })
+    );
+
+    renderizarTrabalhos(lista.map(function(v){
+      var apoio = [v.formato, v.marca].filter(Boolean).join(" · ");
+      return {
+        niche: String(v.nicho || "").trim(),
+        title: v.titulo || "",
+        titleEn: v.titulo || "",
+        desc: apoio,
+        descEn: apoio
+      };
+    }), listaNichos);
+
+    /* Destaques: os três primeiros vídeos que tiverem o campo
+       destaque preenchido no painel. */
+    var comDestaque = lista.filter(function(v){
+      return String(v.destaque || "").trim();
+    }).slice(0, 3);
+
+    if (comDestaque.length){
+      renderizarDestaques(comDestaque.map(function(v){
+        var d = partirDestaque(v.destaque);
+        var contexto = [v.marca, v.formato].filter(Boolean).join(" · ");
+        return {
+          link: v.link || "#",
+          metricValue: d.valor,
+          metricLabel: d.rotulo,
+          metricLabelEn: d.rotulo,
+          title: v.titulo || "",
+          titleEn: v.titulo || "",
+          context: contexto,
+          contextEn: contexto
+        };
+      }));
+    }
+
+    aplicarIdioma(idiomaAtual);
+    ativarRevelacao();
+  }
+
+  carregarVideosDoBanco();
+
+  /* Conta a visita, sem serviço de fora e sem pedir nada
+     para quem está visitando. */
+  if (window.Banco) window.Banco.registrarVisita("/");
 
 })();
 </script>

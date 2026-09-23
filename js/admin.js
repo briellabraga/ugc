@@ -76,18 +76,27 @@ window.Admin = (function(){
     });
   }
 
-  /* Le "2026-09-22" como dia 22 aqui, sem pular para o dia anterior
-     por causa de fuso horario. */
+  /* Devolve sempre o dia no horario de Brasilia, nunca no fuso do
+     servidor. Uma visita das 21h nao pode virar visita de amanha.
+     Data pura ("2026-09-22") entra como o dia 22 mesmo. Data com
+     hora e convertida para o dia local de quem esta olhando. */
   function lerData(texto){
     if (!texto) return null;
-    if (texto instanceof Date) return isNaN(texto) ? null : texto;
-    var partes = String(texto).slice(0,10).split("-");
-    if (partes.length !== 3) {
-      var solta = new Date(texto);
-      return isNaN(solta) ? null : solta;
+    if (texto instanceof Date){
+      return isNaN(texto) ? null : new Date(texto.getFullYear(), texto.getMonth(), texto.getDate());
     }
-    var d = new Date(Number(partes[0]), Number(partes[1]) - 1, Number(partes[2]));
-    return isNaN(d) ? null : d;
+
+    var t = String(texto).trim();
+
+    if (/^\d{4}-\d{2}-\d{2}$/.test(t)){
+      var p = t.split("-");
+      var pura = new Date(Number(p[0]), Number(p[1]) - 1, Number(p[2]));
+      return isNaN(pura) ? null : pura;
+    }
+
+    var comHora = new Date(t);
+    if (isNaN(comHora)) return null;
+    return new Date(comHora.getFullYear(), comHora.getMonth(), comHora.getDate());
   }
 
   function dataBR(texto){

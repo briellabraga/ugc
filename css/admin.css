@@ -470,6 +470,7 @@ tr.alvo-solta td{ box-shadow:inset 0 2px 0 var(--lime); }
   gap:16px;
   margin-bottom:18px;
 }
+.duas-colunas.duas-iguais{ grid-template-columns:1fr 1fr; }
 .titulo-bloco{
   font-size:.8rem;
   font-weight:700;
@@ -897,7 +898,9 @@ tr.alvo-solta td{ box-shadow:inset 0 2px 0 var(--lime); }
 
 /* ---------------- CELULAR ---------------- */
 @media (max-width: 900px){
-  .duas-colunas{ grid-template-columns:1fr; }
+  .duas-colunas,
+  .duas-colunas.duas-iguais{ grid-template-columns:1fr; }
+  .faixa-numeros[style]{ grid-template-columns:repeat(2,1fr) !important; }
   .faixa-numeros{ grid-template-columns:repeat(2,1fr); }
   .faixa-numeros.de-quatro{ grid-template-columns:repeat(2,1fr); }
   .numero{ border-bottom:1px solid var(--line); }

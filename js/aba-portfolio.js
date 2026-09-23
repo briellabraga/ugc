@@ -12,23 +12,49 @@
   var FORMATOS_SUGERIDOS = ["Reels 9:16","TikTok 9:16","Story 9:16","YouTube Shorts","Feed 4:5","Foto"];
 
   var videos = [];
-  var visitas = [];
+  var visitas = [];    // janela longa, para o mes e as comparacoes
+  var visitas14 = [];  // so os ultimos 14 dias
   var area = null;
 
-  async function carregar(){
-    var limite = new Date();
-    limite.setDate(limite.getDate() - 13);
-    limite.setHours(0,0,0,0);
+  /* Busca desde o primeiro dia do mes passado, ou desde 28 dias
+     atras, o que for mais antigo. Assim da para calcular o mes
+     inteiro e tambem comparar com o periodo anterior. */
+  function inicioDaJanela(){
+    var h = A.hoje();
+    var mesPassado = new Date(h.getFullYear(), h.getMonth() - 1, 1);
+    var quatroSemanas = new Date(h);
+    quatroSemanas.setDate(quatroSemanas.getDate() - 28);
+    return mesPassado < quatroSemanas ? mesPassado : quatroSemanas;
+  }
 
+  async function carregar(){
     var r1 = await window.Banco.consulta("videos", function(c){
       return c.from("videos").select("*").order("ordem", { ascending:true });
     });
     var r2 = await window.Banco.consulta("visitas", function(c){
-      return c.from("visitas").select("data,origem,pagina").gte("data", limite.toISOString());
+      return c.from("visitas").select("data,origem,pagina").gte("data", inicioDaJanela().toISOString());
     });
 
     videos  = r1.dados || [];
     visitas = r2.dados || [];
+
+    var corte = A.hoje();
+    corte.setDate(corte.getDate() - 13);
+    visitas14 = visitas.filter(function(v){
+      var d = A.lerData(v.data);
+      return d && d >= corte;
+    });
+  }
+
+  /* Conta visitas entre duas datas, incluindo as duas pontas. */
+  function contarEntre(de, ate){
+    var inicio = A.paraISO(de), fim = A.paraISO(ate);
+    return visitas.filter(function(v){
+      var d = A.lerData(v.data);
+      if (!d) return false;
+      var chave = A.paraISO(d);
+      return chave >= inicio && chave <= fim;
+    }).length;
   }
 
   /* ---------------- NUMEROS ---------------- */
@@ -54,13 +80,69 @@
 
   function contarOrigens(){
     var mapa = {};
-    visitas.forEach(function(v){
+    visitas14.forEach(function(v){
       var o = (v.origem || "direto").toString().trim().toLowerCase() || "direto";
       mapa[o] = (mapa[o] || 0) + 1;
     });
     return Object.keys(mapa)
       .map(function(k){ return { nome:k, total:mapa[k] }; })
       .sort(function(a,b){ return b.total - a.total; });
+  }
+
+  function contarPaginas(){
+    var mapa = {};
+    visitas.forEach(function(v){
+      var p = String(v.pagina || "/").trim() || "/";
+      mapa[p] = (mapa[p] || 0) + 1;
+    });
+    return Object.keys(mapa)
+      .map(function(k){ return { nome:k, total:mapa[k] }; })
+      .sort(function(a,b){ return b.total - a.total; });
+  }
+
+  /* Visitas do mes atual e do mes passado, para a comparacao. */
+  function visitasDoMes(){
+    var h = A.hoje();
+    var inicioMes = new Date(h.getFullYear(), h.getMonth(), 1);
+    var fimMesPassado = new Date(h.getFullYear(), h.getMonth(), 0);
+    var inicioMesPassado = new Date(h.getFullYear(), h.getMonth() - 1, 1);
+    return {
+      atual: contarEntre(inicioMes, h),
+      passado: contarEntre(inicioMesPassado, fimMesPassado)
+    };
+  }
+
+  /* Ultimos 14 dias contra os 14 dias anteriores a eles. */
+  function compararQuinzenas(){
+    var h = A.hoje();
+    var inicioAgora = new Date(h);      inicioAgora.setDate(inicioAgora.getDate() - 13);
+    var fimAntes = new Date(inicioAgora); fimAntes.setDate(fimAntes.getDate() - 1);
+    var inicioAntes = new Date(fimAntes); inicioAntes.setDate(inicioAntes.getDate() - 13);
+    return { agora: contarEntre(inicioAgora, h), antes: contarEntre(inicioAntes, fimAntes) };
+  }
+
+  /* Monta a frase da comparacao sem nunca dividir por zero. */
+  function frasePorcentagem(agora, antes){
+    if (!antes && !agora) return { valor:"sem dados", apoio:"ainda não há o que comparar" };
+    if (!antes) return { valor:"primeiras visitas", apoio:"no período anterior não houve nenhuma" };
+    var variacao = Math.round(A.dividir(agora - antes, antes) * 100);
+    var texto = variacao > 0 ? "+" + variacao + "%" : (variacao < 0 ? variacao + "%" : "igual");
+    return { valor:texto, apoio:"antes eram " + antes };
+  }
+
+  var DIAS_SEMANA = ["domingo","segunda-feira","terça-feira","quarta-feira","quinta-feira","sexta-feira","sábado"];
+
+  function diaQueMaisMovimenta(){
+    if (!visitas.length) return null;
+    var contagem = [0,0,0,0,0,0,0];
+    visitas.forEach(function(v){
+      var d = A.lerData(v.data);
+      if (d) contagem[d.getDay()]++;
+    });
+    var melhor = 0;
+    for (var i = 1; i < 7; i++){ if (contagem[i] > contagem[melhor]) melhor = i; }
+    if (!contagem[melhor]) return null;
+    return { nome: DIAS_SEMANA[melhor], total: contagem[melhor] };
   }
 
   function nichoMaisForte(){
@@ -96,6 +178,54 @@
       bloco("Nicho mais forte", nicho ? nicho.nome : "sem dados", nicho ? (nicho.total + (nicho.total === 1 ? " vídeo" : " vídeos")) : "cadastre um vídeo") +
       bloco("De onde mais vêm", principal ? principal.nome : "sem dados", principal ? (principal.total + (principal.total === 1 ? " visita" : " visitas")) : "ainda sem visita") +
     '</div>';
+  }
+
+  /* Segunda faixa: o mês, a comparação com o período anterior
+     e o dia da semana que mais movimenta. */
+  function montarNumerosExtras(){
+    var mes = visitasDoMes();
+    var quinzenas = compararQuinzenas();
+    var comparacao = frasePorcentagem(quinzenas.agora, quinzenas.antes);
+    var dia = diaQueMaisMovimenta();
+
+    var apoioMes;
+    if (!mes.atual && !mes.passado) apoioMes = "ainda sem visita";
+    else if (!mes.passado)          apoioMes = "primeiro mês com visita";
+    else {
+      var v = Math.round(A.dividir(mes.atual - mes.passado, mes.passado) * 100);
+      apoioMes = (v > 0 ? "+" + v + "%" : (v < 0 ? v + "%" : "igual")) +
+                 " que o mês passado (" + mes.passado + ")";
+    }
+
+    return '<div class="faixa-numeros" style="grid-template-columns:repeat(3,1fr)">' +
+      bloco("Visitas neste mês", mes.atual, apoioMes) +
+      bloco("Últimos 14 dias", comparacao.valor, comparacao.apoio) +
+      bloco("Dia que mais movimenta", dia ? dia.nome : "sem dados",
+            dia ? (dia.total + (dia.total === 1 ? " visita no período" : " visitas no período")) : "ainda sem visita") +
+    '</div>';
+  }
+
+  /* Quais páginas do site foram vistas. */
+  function montarPaginas(){
+    var paginas = contarPaginas();
+    if (!paginas.length){
+      return '<div class="cartao cartao-pad">' +
+        '<p class="titulo-bloco">Páginas mais vistas</p>' +
+        '<div class="vazio"><b>Nenhuma página vista ainda</b>' +
+        'Quando as visitas começarem, aqui aparece quais endereços do seu site ' +
+        'as pessoas abriram e quantas vezes cada um.</div></div>';
+    }
+    var maior = paginas[0].total;
+    return '<div class="cartao cartao-pad">' +
+      '<p class="titulo-bloco">Páginas mais vistas</p>' +
+      '<ul class="lista-origens">' +
+        paginas.slice(0,7).map(function(p){
+          var pct = Math.round(A.dividir(p.total, maior) * 100);
+          return '<li><span class="origem-nome" style="flex-basis:120px;text-transform:none">' + A.escapar(p.nome) + '</span>' +
+            '<span class="origem-trilho"><i class="origem-cheio" style="width:' + pct + '%"></i></span>' +
+            '<span class="origem-num">' + p.total + '</span></li>';
+        }).join("") +
+      '</ul></div>';
   }
 
   function bloco(rotulo, valor, apoio){
@@ -369,7 +499,9 @@
 
     area.innerHTML =
       montarNumeros(dias) +
-      '<div class="duas-colunas">' + montarGrafico(dias) + montarOrigens() + '</div>' +
+      montarNumerosExtras() +
+      '<div style="margin-bottom:18px">' + montarGrafico(dias) + '</div>' +
+      '<div class="duas-colunas duas-iguais">' + montarOrigens() + montarPaginas() + '</div>' +
       '<div class="ferramentas">' +
         '<p class="titulo-bloco" style="margin:0">Meus vídeos</p>' +
         '<span class="espaco"></span>' +

@@ -12,12 +12,6 @@
   "use strict";
   var A = window.Admin;
 
-  var TOKSCRIPT = {
-    "YouTube":   "https://tokscript.com/youtube-transcript-generator",
-    "Instagram": "https://tokscript.com/instagram-transcript-generator",
-    "TikTok":    "https://tokscript.com/",
-    "Outro":     "https://tokscript.com/"
-  };
   var CORES = {
     "YouTube":"p-vermelho", "Instagram":"p-roxo", "TikTok":"p-azul", "Outro":"p-cinza"
   };
@@ -172,7 +166,7 @@
           '</div>' +
           (t.roteiro
             ? '<div class="roteiro-caixa">' + A.escapar(t.roteiro) + '</div>'
-            : '<div class="vazio" style="padding:16px">Sem transcrição salva. Clique em editar e use o botão do TokScript para gerar.</div>') +
+            : '<div class="vazio" style="padding:16px">Sem transcrição salva. Clique em editar e use o botão Abrir no TokScript.</div>') +
         '</div>' +
 
         '<div class="ficha-linha">' +
@@ -217,13 +211,18 @@
 
         '<div class="caixa-tokscript">' +
           '<div><b>Ainda não tem a transcrição?</b><br>' +
-          '<span>O botão abaixo copia o link do vídeo e abre a página certa do TokScript. ' +
-          'Lá você cola o link, gera o texto e traz de volta para o campo Transcrição.</span></div>' +
-          '<button type="button" class="btn btn-lima" id="tGerar">Gerar transcrição</button>' +
+          '<span>O botão abre o TokScript já com este vídeo carregado, sem você precisar colar nada lá. ' +
+          'Gere o texto, copie, e volte aqui no botão Colar.</span></div>' +
+          '<button type="button" class="btn btn-lima" id="tGerar">Abrir no TokScript</button>' +
         '</div>' +
 
-        '<div class="campo"><label for="tRoteiro">Transcrição</label>' +
-        '<textarea id="tRoteiro" class="area-roteiro" style="min-height:190px" placeholder="Cole aqui o texto do vídeo">' + A.escapar(item.roteiro) + '</textarea></div>' +
+        '<div class="campo">' +
+          '<div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">' +
+            '<label for="tRoteiro" style="margin:0">Transcrição</label>' +
+            '<button type="button" class="btn btn-pequeno" id="tColar" style="margin-left:auto">Colar</button>' +
+          '</div>' +
+          '<textarea id="tRoteiro" class="area-roteiro" style="min-height:190px" placeholder="Cole aqui o texto do vídeo">' + A.escapar(item.roteiro) + '</textarea>' +
+        '</div>' +
 
         '<div class="campo"><label for="tObs">Minhas observações</label>' +
         '<textarea id="tObs" placeholder="O que te chamou atenção, o gancho, o que dá para adaptar para a sua marca">' + A.escapar(item.obs) + '</textarea></div>' +
@@ -243,12 +242,41 @@
         campoLink.addEventListener("input", mostrarPlataforma);
         mostrarPlataforma();
 
+        /* Atalho do TokScript: o link do vídeo entra no fim do endereço
+           e a página abre com ele já preenchido. Sem link, abre a
+           página da rede correspondente. */
         corpo.querySelector("#tGerar").addEventListener("click", function(){
           var link = campoLink.value.trim();
-          var p = detectarPlataforma(link);
-          if (link) copiar(link, "Link copiado, agora é só colar no TokScript");
-          else A.recado("Cole o link do vídeo primeiro", true);
-          window.open(TOKSCRIPT[p] || TOKSCRIPT.Outro, "_blank", "noopener");
+          if (!link){
+            A.recado("Cole o link do vídeo primeiro", true);
+            campoLink.focus();
+            return;
+          }
+          window.open("https://tokscript.com/" + link, "_blank", "noopener");
+        });
+
+        /* Depois de copiar o texto no TokScript, um clique traz
+           para cá, sem precisar procurar o campo. */
+        corpo.querySelector("#tColar").addEventListener("click", async function(){
+          var campo = document.getElementById("tRoteiro");
+          if (!navigator.clipboard || !navigator.clipboard.readText){
+            A.recado("Seu navegador não deixa colar por botão. Clique no campo e use Ctrl V", true);
+            campo.focus();
+            return;
+          }
+          try {
+            var texto = await navigator.clipboard.readText();
+            if (!texto || !texto.trim()){
+              A.recado("Não há nada copiado ainda", true);
+              return;
+            }
+            campo.value = texto.trim();
+            campo.focus();
+            A.recado("Transcrição colada");
+          } catch (falha){
+            A.recado("O navegador não liberou a colagem. Clique no campo e use Ctrl V", true);
+            campo.focus();
+          }
         });
       },
 

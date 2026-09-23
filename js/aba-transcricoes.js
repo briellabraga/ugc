@@ -144,7 +144,7 @@
       visual = '<div class="trans-video' + (vertical ? " vertical" : "") + '">' +
         '<iframe src="' + A.escapar(endereco) + '" title="Vídeo salvo" loading="lazy" allowfullscreen ' +
         'referrerpolicy="strict-origin-when-cross-origin" ' +
-        'sandbox="allow-scripts allow-same-origin allow-presentation allow-popups"></iframe></div>';
+        'allow="accelerometer; encrypted-media; picture-in-picture; web-share"></iframe></div>';
     } else if (t.link){
       visual = '<div class="trans-semvideo">Este link não pode ser mostrado aqui dentro.' +
         '<br><a class="btn btn-pequeno" href="' + A.escapar(t.link) + '" target="_blank" rel="noopener" style="margin-top:9px">' +

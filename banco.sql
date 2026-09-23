@@ -88,6 +88,17 @@ create table if not exists public.visitas (
   origem  text
 );
 
+-- Os videos que voce gosta, com a transcricao e as suas anotacoes.
+create table if not exists public.transcricoes (
+  id          uuid primary key default gen_random_uuid(),
+  titulo      text not null,
+  link        text,
+  plataforma  text,
+  roteiro     text,
+  obs         text,
+  criado_em   timestamptz not null default now()
+);
+
 
 -- ============================================================
 -- BLOCO 2: AS LISTAS DE OPCOES PERMITIDAS
@@ -164,20 +175,22 @@ $$;
 -- regra dizendo que pode. As regras vem no bloco 5.
 -- ============================================================
 
-alter table public.videos     enable row level security;
-alter table public.marcas     enable row level security;
-alter table public.calendario enable row level security;
-alter table public.campanhas  enable row level security;
-alter table public.marcados   enable row level security;
-alter table public.visitas    enable row level security;
+alter table public.videos       enable row level security;
+alter table public.marcas       enable row level security;
+alter table public.calendario   enable row level security;
+alter table public.campanhas    enable row level security;
+alter table public.marcados     enable row level security;
+alter table public.visitas      enable row level security;
+alter table public.transcricoes enable row level security;
 
 -- Forca a tranca a valer tambem para a dona do banco.
-alter table public.videos     force row level security;
-alter table public.marcas     force row level security;
-alter table public.calendario force row level security;
-alter table public.campanhas  force row level security;
-alter table public.marcados   force row level security;
-alter table public.visitas    force row level security;
+alter table public.videos       force row level security;
+alter table public.marcas       force row level security;
+alter table public.calendario   force row level security;
+alter table public.campanhas    force row level security;
+alter table public.marcados     force row level security;
+alter table public.visitas      force row level security;
+alter table public.transcricoes force row level security;
 
 
 -- ============================================================
@@ -252,6 +265,14 @@ create policy "site registra visita" on public.visitas
   for insert to anon, authenticated
   with check (true);
 
+-- ---------- transcricoes ----------
+-- Material de estudo seu. Ninguem deslogado encosta, nem para ler.
+drop policy if exists "dona faz tudo em transcricoes" on public.transcricoes;
+create policy "dona faz tudo em transcricoes" on public.transcricoes
+  for all to authenticated
+  using (public.eh_dona())
+  with check (public.eh_dona());
+
 
 -- ============================================================
 -- BLOCO 6: PERMISSAO DE ACESSO AS TABELAS
@@ -264,7 +285,8 @@ grant usage on schema public to anon, authenticated;
 
 grant select, insert, update, delete on
   public.videos, public.marcas, public.calendario,
-  public.campanhas, public.marcados, public.visitas
+  public.campanhas, public.marcados, public.visitas,
+  public.transcricoes
   to authenticated;
 
 grant select on public.videos  to anon;   -- ler video visivel
@@ -297,6 +319,12 @@ where not exists (select 1 from public.calendario);
 insert into public.campanhas (campanha, cliente, tipo, status, qtd, valor, prazo, pagamento, ativa, favorita)
 select 'Campanha de exemplo, pode apagar', 'Marca exemplo', 'Conteúdo', 'Briefing', 1, 0, current_date + 7, 'pendente', true, false
 where not exists (select 1 from public.campanhas);
+
+insert into public.transcricoes (titulo, link, plataforma, roteiro, obs)
+select 'Vídeo de exemplo, pode apagar', '', 'Outro',
+       'Cole aqui a transcrição do vídeo. O botão do TokScript, dentro do formulário, abre a página certa conforme a rede do link.',
+       'Use este espaço para anotar o que você quer aproveitar desse vídeo.'
+where not exists (select 1 from public.transcricoes);
 
 
 -- ============================================================

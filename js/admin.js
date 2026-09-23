@@ -296,6 +296,7 @@ window.Admin = (function(){
 
     var area = document.getElementById("areaAba");
     area.innerHTML = '<div class="carregando-tela">Carregando...</div>';
+    marcarHorario();
 
     try {
       window.location.hash = aba.id;
@@ -310,6 +311,40 @@ window.Admin = (function(){
           'Tente recarregar a página.</div></div>';
         if (window.console) console.error(falha);
       });
+  }
+
+  /* ---------------- ATUALIZAR ----------------
+     O painel busca os dados quando a aba abre. Este botão busca
+     de novo, e a página também busca sozinha quando você volta
+     para ela depois de um tempo em outra aba. */
+  var horaDaBusca = null;
+
+  function marcarHorario(){
+    horaDaBusca = new Date();
+    var marcador = document.getElementById("atualizado");
+    if (marcador){
+      marcador.textContent = "atualizado às " +
+        String(horaDaBusca.getHours()).padStart(2,"0") + ":" +
+        String(horaDaBusca.getMinutes()).padStart(2,"0");
+    }
+  }
+
+  function atualizarAgora(){
+    if (abaAtual) irPara(abaAtual);
+  }
+
+  function ligarAtualizacao(){
+    var botao = document.getElementById("botaoAtualizar");
+    if (botao) botao.addEventListener("click", atualizarAgora);
+
+    /* Voltou para o painel depois de meio minuto fora? Busca de novo,
+       para os números não ficarem velhos na tela sem você perceber. */
+    document.addEventListener("visibilitychange", function(){
+      if (document.visibilityState !== "visible") return;
+      if (!horaDaBusca) return;
+      if (new Date() - horaDaBusca < 30000) return;
+      atualizarAgora();
+    });
   }
 
   /* ---------------- GAVETA DO CELULAR ---------------- */
@@ -354,6 +389,7 @@ window.Admin = (function(){
     document.getElementById("abrirMenu").addEventListener("click", abrirGaveta);
     document.getElementById("veu").addEventListener("click", fecharGaveta);
 
+    ligarAtualizacao();
     montarMenu();
 
     var inicial = (window.location.hash || "").replace("#","");

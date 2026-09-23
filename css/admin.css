@@ -157,6 +157,18 @@ a{ color:inherit; text-decoration:none; }
 }
 .cabecalho p{ margin:3px 0 0; font-size:.82rem; color:var(--ink-fraco); }
 
+.cabecalho-acoes{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  margin-left:auto;
+}
+.atualizado{
+  font-size:.72rem;
+  color:var(--ink-fraco);
+  white-space:nowrap;
+}
+
 .abrir-menu{
   display:none;
   width:38px; height:38px;
@@ -915,6 +927,8 @@ tr.alvo-solta td{ box-shadow:inset 0 2px 0 var(--lime); }
   .menu.aberta{ transform:translateX(0); }
   .conteudo{ margin-left:0; padding:18px 16px 50px; }
   .abrir-menu{ display:flex; }
+  .atualizado{ display:none; }
+  .cabecalho-acoes{ margin-left:0; }
   .cal-dia{ min-height:76px; padding:4px 4px 6px; }
   .cal-item{ font-size:.63rem; padding:2px 4px; }
   .cal-semana span{ padding:7px 4px; font-size:.6rem; }

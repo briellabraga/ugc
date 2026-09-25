@@ -31,6 +31,7 @@ window.Admin = (function(){
     alcinha:    '<circle cx="9" cy="6" r="1.4"/><circle cx="15" cy="6" r="1.4"/><circle cx="9" cy="12" r="1.4"/><circle cx="15" cy="12" r="1.4"/><circle cx="9" cy="18" r="1.4"/><circle cx="15" cy="18" r="1.4"/>',
     estrela:    '<path d="m12 3 2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.8 6.2 20.9l1.1-6.5L2.6 9.8l6.5-.9Z"/>',
     baixar:     '<path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M4 21h16"/>',
+    subir:      '<path d="M12 18V6"/><path d="m7 10 5-5 5 5"/><path d="M4 21h16"/>',
     esquerda:   '<path d="m15 18-6-6 6-6"/>',
     direita:    '<path d="m9 18 6-6-6-6"/>',
     baixo:      '<path d="m6 9 6 6 6-6"/>',

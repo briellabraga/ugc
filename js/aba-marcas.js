@@ -19,6 +19,323 @@
   var busca = "";
   var filtro = "Todas";
 
+  /* ============================================================
+     IMPORTAR PLANILHA
+
+     Lê um arquivo CSV, que é o formato que o Excel e o Planilhas
+     Google geram em "salvar como". Reconhece as colunas pelo nome
+     do cabeçalho, aceita vírgula ou ponto e vírgula como separador
+     e mostra tudo numa prévia antes de gravar qualquer coisa.
+     ============================================================ */
+
+  /* Tira acento e deixa minúsculo, para comparar nome de coluna
+     sem depender de como a pessoa escreveu. */
+  function normalizar(texto){
+    return String(texto === undefined || texto === null ? "" : texto)
+      .trim().toLowerCase()
+      .normalize("NFD").replace(/[̀-ͯ]/g, "");
+  }
+
+  /* Nomes de coluna que o painel entende, na ordem do arquivo que
+     o próprio botão de baixar gera. */
+  var COLUNAS = [
+    { campo:"nome",           nomes:["marca","nome","nome da marca","empresa","cliente"] },
+    { campo:"instagram",      nomes:["instagram","insta","arroba","perfil","@"] },
+    { campo:"email",          nomes:["e-mail","email","mail","correio"] },
+    { campo:"telefone",       nomes:["telefone","tel","celular","whatsapp","zap","fone","numero"] },
+    { campo:"situacao",       nomes:["situacao","status","estagio","etapa"] },
+    { campo:"obs",            nomes:["observacao","observacoes","obs","nota","notas","anotacao","anotacoes"] },
+    { campo:"ultimo_contato", nomes:["ultimo contato","ultimo_contato","ultimocontato","data","data do ultimo contato"] }
+  ];
+
+  /* Descobre se o arquivo usa ponto e vírgula, vírgula ou tabulação. */
+  function descobrirSeparador(texto){
+    var primeira = texto.split(/\r?\n/)[0] || "";
+    var fora = primeira.replace(/"[^"]*"/g, "");
+    var contagem = [
+      { s:";",  n:(fora.match(/;/g)  || []).length },
+      { s:",",  n:(fora.match(/,/g)  || []).length },
+      { s:"\t", n:(fora.match(/\t/g) || []).length }
+    ].sort(function(a,b){ return b.n - a.n; });
+    return contagem[0].n ? contagem[0].s : ";";
+  }
+
+  /* Quebra o texto em linhas e colunas respeitando as aspas, para
+     observação com vírgula dentro não virar duas colunas. */
+  function lerCSV(texto, separador){
+    var linhas = [], linha = [], campo = "", dentroDeAspas = false;
+
+    for (var i = 0; i < texto.length; i++){
+      var c = texto.charAt(i);
+
+      if (dentroDeAspas){
+        if (c === '"'){
+          if (texto.charAt(i + 1) === '"'){ campo += '"'; i++; }
+          else dentroDeAspas = false;
+        } else campo += c;
+        continue;
+      }
+
+      if (c === '"')            dentroDeAspas = true;
+      else if (c === separador) { linha.push(campo); campo = ""; }
+      else if (c === "\n")      { linha.push(campo); linhas.push(linha); linha = []; campo = ""; }
+      else if (c !== "\r")      campo += c;
+    }
+    if (campo !== "" || linha.length){ linha.push(campo); linhas.push(linha); }
+
+    return linhas.filter(function(l){
+      return l.some(function(v){ return String(v).trim() !== ""; });
+    });
+  }
+
+  /* Lê o arquivo respeitando o acento. O Excel costuma salvar em
+     um formato antigo, então se o texto vier estranho eu tento de
+     novo do outro jeito. */
+  function lerArquivo(arquivo){
+    return new Promise(function(ok, erro){
+      var leitor = new FileReader();
+      leitor.onerror = function(){ erro(new Error("não consegui abrir o arquivo")); };
+      leitor.onload = function(){
+        var bytes = new Uint8Array(leitor.result);
+        var texto = "";
+        try { texto = new TextDecoder("utf-8").decode(bytes); } catch(f){ texto = ""; }
+        if (!texto || texto.indexOf("�") !== -1){
+          try { texto = new TextDecoder("windows-1252").decode(bytes); } catch(f){}
+        }
+        ok(String(texto).replace(/^﻿/, ""));
+      };
+      leitor.readAsArrayBuffer(arquivo);
+    });
+  }
+
+  function lerSituacao(valor){
+    var n = normalizar(valor);
+    if (!n) return "Lead";
+    if (n.indexOf("convers") === 0) return "Conversando";
+    if (n.indexOf("client") === 0)  return "Cliente";
+    if (n.indexOf("parad") === 0)   return "Parada";
+    return "Lead";
+  }
+
+  /* Aceita 24/09/2026 e 2026-09-24. Qualquer outra coisa entra vazia,
+     em vez de derrubar a importação inteira. */
+  function lerDataPlanilha(valor){
+    var s = String(valor || "").trim();
+    if (!s) return null;
+    var br = s.match(/^(\d{1,2})[\/\-.](\d{1,2})[\/\-.](\d{2,4})$/);
+    if (br){
+      var ano = br[3].length === 2 ? "20" + br[3] : br[3];
+      return ano + "-" + String(br[2]).padStart(2,"0") + "-" + String(br[1]).padStart(2,"0");
+    }
+    var iso = s.match(/^\d{4}-\d{2}-\d{2}/);
+    return iso ? iso[0] : null;
+  }
+
+  /* Monta a ligação entre as colunas do arquivo e os campos da base. */
+  function mapearColunas(cabecalho){
+    var mapa = {}, reconhecidas = 0;
+    cabecalho.forEach(function(titulo, posicao){
+      var n = normalizar(titulo);
+      COLUNAS.forEach(function(col){
+        if (mapa[col.campo] !== undefined) return;
+        if (col.nomes.indexOf(n) !== -1){ mapa[col.campo] = posicao; reconhecidas++; }
+      });
+    });
+    return { mapa: mapa, reconhecidas: reconhecidas };
+  }
+
+  function montarContatos(linhas){
+    var primeira = linhas[0] || [];
+    var resultado = mapearColunas(primeira);
+    var mapa = resultado.mapa;
+    var temCabecalho = resultado.reconhecidas > 0;
+
+    /* Sem cabeçalho reconhecido, assume a ordem do arquivo que o
+       botão de baixar gera e avisa isso na prévia. */
+    if (!temCabecalho){
+      mapa = {};
+      COLUNAS.forEach(function(col, i){ mapa[col.campo] = i; });
+    }
+
+    var corpo = temCabecalho ? linhas.slice(1) : linhas;
+
+    return {
+      temCabecalho: temCabecalho,
+      colunasLidas: Object.keys(mapa),
+      contatos: corpo.map(function(linha){
+        function pegar(campo){
+          var p = mapa[campo];
+          return p === undefined ? "" : String(linha[p] === undefined ? "" : linha[p]).trim();
+        }
+        return {
+          nome: pegar("nome"),
+          instagram: pegar("instagram"),
+          email: pegar("email"),
+          telefone: pegar("telefone"),
+          situacao: lerSituacao(pegar("situacao")),
+          obs: pegar("obs"),
+          ultimo_contato: lerDataPlanilha(pegar("ultimo_contato"))
+        };
+      }).filter(function(c){ return c.nome || c.email || c.instagram; })
+    };
+  }
+
+  /* Já existe na base? Compara pelo e-mail, e sem e-mail pelo nome. */
+  function jaExiste(contato){
+    var email = normalizar(contato.email);
+    var nome = normalizar(contato.nome);
+    return marcas.some(function(m){
+      if (email && normalizar(m.email) === email) return true;
+      if (!email && nome && normalizar(m.nome) === nome) return true;
+      return false;
+    });
+  }
+
+  function escolherArquivo(){
+    var entrada = document.createElement("input");
+    entrada.type = "file";
+    entrada.accept = ".csv,text/csv,text/plain";
+    entrada.style.display = "none";
+    document.body.appendChild(entrada);
+    entrada.addEventListener("change", async function(){
+      var arquivo = entrada.files && entrada.files[0];
+      document.body.removeChild(entrada);
+      if (arquivo) await prepararImportacao(arquivo);
+    });
+    entrada.click();
+  }
+
+  async function prepararImportacao(arquivo){
+    if (/\.(xlsx|xls|ods|numbers)$/i.test(arquivo.name)){
+      A.abrirJanela({
+        titulo: "Salve como CSV primeiro",
+        corpo:
+          '<p style="margin:0 0 12px;font-size:.88rem;line-height:1.6">Esse arquivo é uma planilha do Excel, e o painel lê planilhas no formato CSV, que é o mesmo conteúdo em texto.</p>' +
+          '<p style="margin:0;font-size:.88rem;line-height:1.6"><b>No Excel:</b> menu Arquivo, depois Salvar como, e no tipo escolha CSV.<br>' +
+          '<b>No Planilhas Google:</b> menu Arquivo, depois Fazer download, depois CSV.<br><br>' +
+          'Depois é só clicar de novo em importar planilha e escolher o arquivo salvo.</p>',
+        botoes: [{ texto:"Entendi", classe:"btn-lima", aoClicar:function(fechar){ fechar(); } }]
+      });
+      return;
+    }
+
+    var texto;
+    try { texto = await lerArquivo(arquivo); }
+    catch (falha){ A.recado("Não consegui abrir esse arquivo", true); return; }
+
+    if (!texto.trim()){ A.recado("Esse arquivo está vazio", true); return; }
+
+    var linhas = lerCSV(texto, descobrirSeparador(texto));
+    if (!linhas.length){ A.recado("Não encontrei nenhuma linha nesse arquivo", true); return; }
+
+    var lido = montarContatos(linhas);
+    if (!lido.contatos.length){
+      A.recado("Não encontrei nenhum contato com nome, e-mail ou instagram", true);
+      return;
+    }
+    mostrarPrevia(lido, arquivo.name);
+  }
+
+  function mostrarPrevia(lido, nomeArquivo){
+    var contatos = lido.contatos;
+    var repetidos = contatos.filter(jaExiste).length;
+
+    var amostra = contatos.slice(0, 5);
+    var tabela =
+      '<div class="rolagem" style="border:1px solid var(--line);border-radius:10px;margin-top:6px"><table>' +
+      '<thead><tr><th>Marca</th><th>Instagram</th><th>E-mail</th><th>Telefone</th><th>Situação</th><th>Último contato</th></tr></thead><tbody>' +
+      amostra.map(function(c){
+        return '<tr>' +
+          '<td class="celula-forte">' + A.escapar(c.nome || "sem nome") + (jaExiste(c) ? '<span class="etiqueta-exemplo">já existe</span>' : '') + '</td>' +
+          '<td class="celula-fraca">' + A.escapar(c.instagram) + '</td>' +
+          '<td class="celula-fraca">' + A.escapar(c.email) + '</td>' +
+          '<td class="celula-fraca">' + A.escapar(c.telefone) + '</td>' +
+          '<td><span class="pilula ' + corDaSituacao(c.situacao) + '">' + A.escapar(c.situacao) + '</span></td>' +
+          '<td class="celula-fraca">' + A.escapar(A.dataBR(c.ultimo_contato)) + '</td>' +
+        '</tr>';
+      }).join("") +
+      '</tbody></table></div>';
+
+    A.abrirJanela({
+      titulo: "Conferir antes de importar",
+      larga: true,
+      semFoco: true,
+      corpo:
+        '<p style="margin:0 0 4px;font-size:.88rem;line-height:1.6">' +
+          'Li <b>' + contatos.length + (contatos.length === 1 ? ' contato' : ' contatos') + '</b> no arquivo ' +
+          '<b>' + A.escapar(nomeArquivo) + '</b>.' +
+          (repetidos ? ' Desses, <b>' + repetidos + '</b> já estão na sua base.' : '') +
+        '</p>' +
+
+        (lido.temCabecalho
+          ? '<p style="margin:0;font-size:.79rem;color:var(--ink-fraco)">Reconheci as colunas pelo cabeçalho da planilha.</p>'
+          : '<div class="aviso" style="margin:10px 0 0">' + A.icone("alerta") +
+            '<div>Não reconheci os nomes das colunas, então li na ordem: marca, instagram, e-mail, telefone, situação, observação e último contato. ' +
+            'Confira na tabela abaixo se bateu, e cancele se estiver trocado.</div></div>') +
+
+        (contatos.length > amostra.length
+          ? '<p style="margin:14px 0 0;font-size:.79rem;color:var(--ink-fraco)">Mostrando os ' + amostra.length + ' primeiros para você conferir:</p>'
+          : '<p style="margin:14px 0 0;font-size:.79rem;color:var(--ink-fraco)">Conferindo:</p>') +
+
+        tabela +
+
+        '<label class="campo-caixa" style="margin-top:14px">' +
+          '<input type="checkbox" id="mPularRepetidos" checked> Não importar quem já está na minha base</label>' +
+
+        '<p style="margin:10px 0 0;font-size:.79rem;color:var(--ink-fraco)">' +
+          'Quem não tiver situação na planilha entra como Lead. Nada é apagado: a importação só acrescenta.</p>',
+
+      botoes: [
+        { texto:"Cancelar", aoClicar:function(fechar){ fechar(); } },
+        { texto:"Importar", classe:"btn-lima", aoClicar:async function(fechar){
+            var pular = document.getElementById("mPularRepetidos").checked;
+            fechar();
+            await importar(contatos, pular);
+          }
+        }
+      ]
+    });
+  }
+
+  async function importar(contatos, pularRepetidos){
+    var aEnviar = pularRepetidos ? contatos.filter(function(c){ return !jaExiste(c); }) : contatos;
+    var pulados = contatos.length - aEnviar.length;
+
+    if (!aEnviar.length){
+      A.recado("Todos os contatos do arquivo já estão na sua base");
+      return;
+    }
+
+    A.recado("Importando " + aEnviar.length + "...");
+
+    var gravados = 0, falharam = 0;
+    for (var i = 0; i < aEnviar.length; i += 40){
+      var lote = aEnviar.slice(i, i + 40).map(function(c){
+        return {
+          nome: c.nome || c.email || c.instagram,
+          instagram: c.instagram,
+          email: c.email,
+          telefone: c.telefone,
+          situacao: c.situacao,
+          obs: c.obs,
+          ultimo_contato: c.ultimo_contato
+        };
+      });
+      var r = await window.Banco.consulta("marcas", function(cli){
+        return cli.from("marcas").insert(lote);
+      });
+      if (r.erro) falharam += lote.length;
+      else gravados += lote.length;
+    }
+
+    await recarregar();
+
+    var recado = gravados + (gravados === 1 ? " contato importado" : " contatos importados");
+    if (pulados)  recado += ", " + pulados + " já existia" + (pulados === 1 ? "" : "m");
+    if (falharam) recado += ", " + falharam + " não entrou" + (falharam === 1 ? "" : "ram");
+    A.recado(recado, falharam > 0);
+  }
+
   async function carregar(){
     var r = await window.Banco.consulta("marcas", function(c){
       return c.from("marcas").select("*").order("criado_em", { ascending:false });
@@ -222,6 +539,7 @@
           }).join("") +
         '</div>' +
         '<span class="espaco"></span>' +
+        '<button type="button" class="btn" id="mImportar">' + A.icone("subir") + ' Importar planilha</button>' +
         '<button type="button" class="btn" id="mBaixar">' + A.icone("baixar") + ' Baixar CSV</button>' +
         '<button type="button" class="btn btn-lima" id="mAdd">' + A.icone("mais") + ' Adicionar marca</button>' +
       '</div>' +
@@ -243,6 +561,7 @@
     });
     document.getElementById("mAdd").addEventListener("click", function(){ abrirFormulario(null); });
     document.getElementById("mBaixar").addEventListener("click", baixar);
+    document.getElementById("mImportar").addEventListener("click", escolherArquivo);
 
     area.querySelectorAll("[data-apagar]").forEach(function(b){
       b.addEventListener("click", function(e){ e.stopPropagation(); apagar(b.dataset.apagar); });

@@ -231,7 +231,7 @@
         '<p>Manda o seu e-mail de apresentação para várias marcas de uma vez, chamando cada uma pelo nome.</p>' +
       '</div>' +
       '<div class="capa-prosp-total">' +
-        '<b>' + (totalOk ? totalOk : "—") + '</b>' +
+        '<b>' + (totalOk ? totalOk : "-") + '</b>' +
         '<span>enviados até agora</span>' +
       '</div>' +
       '<div class="capa-prosp-chips">' +
@@ -262,9 +262,9 @@
     return '<div class="cartoes-prosp">' +
       cartao("#7ca316", base, "marcas com e-mail", base ? "na sua base de marcas" : "cadastre ou importe") +
       cartao("#2f6fd0", aEnviar, "a enviar", "na seleção de agora") +
-      cartao("#2f7d43", faltou.envios ? "—" : quantosReceberam, "já receberam", faltou.envios ? "rode o disparo.sql" : "e-mails diferentes") +
-      cartao("#a4730b", faltou.envios ? "—" : falhas, "falhas", faltou.envios ? "rode o disparo.sql" : "para limpar a base depois") +
-      cartao("#b3261e", faltou.optout ? "—" : optout.length, "descadastrados", faltou.optout ? "rode o disparo.sql" : "responderam SAIR") +
+      cartao("#2f7d43", faltou.envios ? "-" : quantosReceberam, "já receberam", faltou.envios ? "rode o disparo.sql" : "e-mails diferentes") +
+      cartao("#a4730b", faltou.envios ? "-" : falhas, "falhas", faltou.envios ? "rode o disparo.sql" : "para limpar a base depois") +
+      cartao("#b3261e", faltou.optout ? "-" : optout.length, "descadastrados", faltou.optout ? "rode o disparo.sql" : "responderam SAIR") +
     '</div>';
   }
 

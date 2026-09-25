@@ -20,6 +20,7 @@ window.Admin = (function(){
     campanhas:  '<path d="M3 11v3a1 1 0 0 0 1 1h3l5 4V6L7 10H4a1 1 0 0 0-1 1Z"/><path d="M16 9a4 4 0 0 1 0 6"/><path d="M19 6a8 8 0 0 1 0 12"/>',
     checklist:  '<path d="M9 11l2 2 4-4"/><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M8 2v4M16 2v4"/>',
     transcricao:'<rect x="3" y="4" width="18" height="12" rx="2"/><path d="M7 8h6M7 12h4"/><path d="M8 20h8M12 16v4"/>',
+    prospeccao: '<rect x="2" y="5" width="20" height="14" rx="2"/><path d="m2 7 10 6 10-6"/>',
     menu:       '<path d="M4 6h16M4 12h16M4 18h16"/>',
     sair:       '<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/>',
     mais:       '<path d="M12 5v14M5 12h14"/>',

@@ -377,6 +377,66 @@
     });
   }
 
+  /* ---------------- SELECIONAR PARA A PROSPECÇÃO ---------------- */
+
+  function selecionadas(){
+    return marcas.filter(function(m){ return m.selecionada; });
+  }
+
+  function temEmail(m){
+    return !!String(m.email || "").trim();
+  }
+
+  async function escolher(id, valor){
+    var m = marcas.filter(function(x){ return x.id === id; })[0];
+    if (m) m.selecionada = valor;
+    desenhar();
+
+    var r = await window.Banco.consulta("marcas", function(c){
+      return c.from("marcas").update({ selecionada: valor }).eq("id", id);
+    });
+    if (r.erro){
+      if (m) m.selecionada = !valor;
+      desenhar();
+      A.recado(r.erro, true);
+    }
+  }
+
+  async function escolherVarias(ids, valor){
+    if (!ids.length) return;
+    marcas.forEach(function(m){ if (ids.indexOf(m.id) !== -1) m.selecionada = valor; });
+    desenhar();
+
+    var r = await window.Banco.consulta("marcas", function(c){
+      return c.from("marcas").update({ selecionada: valor }).in("id", ids);
+    });
+    if (r.erro){ A.recado(r.erro, true); await recarregar(); return; }
+    A.recado(valor
+      ? ids.length + (ids.length === 1 ? " marca selecionada" : " marcas selecionadas")
+      : "Seleção limpa");
+  }
+
+  function montarBarraSelecao(lista){
+    var escolhidas = selecionadas().length;
+    var visiveisComEmail = lista.filter(temEmail);
+    var faltamEscolher = visiveisComEmail.filter(function(m){ return !m.selecionada; }).length;
+
+    return '<div class="barra-selecao' + (escolhidas ? " tem" : "") + '">' +
+      '<span class="barra-selecao-num">' +
+        (escolhidas
+          ? escolhidas + (escolhidas === 1 ? " marca selecionada" : " marcas selecionadas")
+          : "Nenhuma marca selecionada") +
+      '</span>' +
+      '<span class="barra-selecao-dica">para o disparo na aba Prospecção</span>' +
+      '<span class="espaco"></span>' +
+      (faltamEscolher
+        ? '<button type="button" class="btn btn-pequeno" id="mSelecionarVisiveis">Selecionar as ' +
+          visiveisComEmail.length + ' que estão aparecendo</button>'
+        : '') +
+      (escolhidas ? '<button type="button" class="btn btn-pequeno" id="mLimparSelecao">Limpar seleção</button>' : '') +
+    '</div>';
+  }
+
   /* ---------------- TABELA ---------------- */
   function montarTabela(lista){
     if (!marcas.length){
@@ -391,13 +451,19 @@
 
     return '<div class="rolagem cartao"><table>' +
       '<thead><tr>' +
+        '<th style="width:34px"></th>' +
         '<th>Marca</th><th>Instagram</th><th>E-mail</th><th>Telefone</th>' +
         '<th>Situação</th><th>Observação</th><th>Último contato</th><th style="width:76px"></th>' +
       '</tr></thead><tbody>' +
       lista.map(function(m){
         var ig = arroba(m.instagram);
         var zap = linkZap(m.telefone);
-        return '<tr class="clicavel" data-abrir="' + A.escapar(m.id) + '">' +
+        var temEmail = !!String(m.email || "").trim();
+        return '<tr class="clicavel' + (m.selecionada ? " selecionada" : "") + '" data-abrir="' + A.escapar(m.id) + '">' +
+          '<td><input type="checkbox" class="caixa-marca" data-escolher="' + A.escapar(m.id) + '"' +
+            (m.selecionada ? " checked" : "") + (temEmail ? "" : " disabled") +
+            ' title="' + (temEmail ? "Escolher para a prospecção" : "Esta marca não tem e-mail cadastrado") + '"' +
+            ' aria-label="Escolher ' + A.escapar(m.nome || "marca") + ' para a prospecção"></td>' +
           '<td class="celula-forte">' + A.escapar(m.nome || "sem nome") +
             (A.ehExemplo(m) ? '<span class="etiqueta-exemplo">exemplo</span>' : '') + '</td>' +
           '<td>' + (ig
@@ -544,6 +610,7 @@
         '<button type="button" class="btn btn-lima" id="mAdd">' + A.icone("mais") + ' Adicionar marca</button>' +
       '</div>' +
 
+      montarBarraSelecao(lista) +
       montarTabela(lista);
 
     var campoBusca = document.getElementById("mBusca");
@@ -574,6 +641,28 @@
         abrirFormulario(marcas.filter(function(m){ return m.id === linha.dataset.abrir; })[0]);
       });
     });
+
+    /* A caixinha de seleção não pode abrir o formulário da linha. */
+    area.querySelectorAll("[data-escolher]").forEach(function(caixa){
+      caixa.addEventListener("click", function(e){ e.stopPropagation(); });
+      caixa.addEventListener("change", function(e){
+        e.stopPropagation();
+        escolher(caixa.dataset.escolher, caixa.checked);
+      });
+    });
+
+    var botaoVisiveis = document.getElementById("mSelecionarVisiveis");
+    if (botaoVisiveis){
+      botaoVisiveis.addEventListener("click", function(){
+        escolherVarias(lista.filter(temEmail).map(function(m){ return m.id; }), true);
+      });
+    }
+    var botaoLimpar = document.getElementById("mLimparSelecao");
+    if (botaoLimpar){
+      botaoLimpar.addEventListener("click", function(){
+        escolherVarias(selecionadas().map(function(m){ return m.id; }), false);
+      });
+    }
   }
 
   async function recarregar(){

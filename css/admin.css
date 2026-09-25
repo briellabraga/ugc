@@ -795,6 +795,327 @@ tr.alvo-solta td{ box-shadow:inset 0 2px 0 var(--lime); }
   margin-bottom:16px;
 }
 
+/* ---------------- SELECIONAR MARCAS ---------------- */
+.caixa-marca{
+  width:16px; height:16px;
+  accent-color:#9cc72b;
+  cursor:pointer;
+  vertical-align:middle;
+}
+.caixa-marca:disabled{ cursor:not-allowed; opacity:.4; }
+tr.selecionada{ background:var(--lime-suave); }
+tr.selecionada:hover{ background:#e7f3cf; }
+
+.barra-selecao{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  flex-wrap:wrap;
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius-sm);
+  padding:10px 14px;
+  margin-bottom:12px;
+  font-size:.83rem;
+}
+.barra-selecao.tem{
+  border-color:#cfe39a;
+  background:var(--lime-suave);
+}
+.barra-selecao-num{ font-weight:700; }
+.barra-selecao-dica{ color:var(--ink-fraco); font-size:.78rem; }
+
+/* ---------------- PROSPECCAO ---------------- */
+.capa-prosp{
+  position:relative;
+  overflow:hidden;
+  border-radius:22px;
+  padding:26px 28px;
+  margin-bottom:18px;
+  color:#f4f7ec;
+  background:linear-gradient(135deg,#527211 0%,#2f4208 55%,#1a2200 100%);
+  display:flex;
+  align-items:center;
+  gap:22px;
+  flex-wrap:wrap;
+}
+.capa-prosp-icone{
+  width:46px; height:46px;
+  flex:0 0 46px;
+  border-radius:14px;
+  background:rgba(255,255,255,.14);
+  border:1px solid rgba(255,255,255,.18);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:var(--lime);
+}
+.capa-prosp-icone svg{ width:22px; height:22px; }
+.capa-prosp-texto{ flex:1 1 260px; min-width:0; }
+.capa-prosp h2{
+  margin:0;
+  font-size:1.3rem;
+  font-weight:700;
+  letter-spacing:-.01em;
+}
+.capa-prosp p{
+  margin:4px 0 0;
+  font-size:.85rem;
+  color:rgba(244,247,236,.75);
+  line-height:1.5;
+}
+.capa-prosp-total{
+  text-align:right;
+  flex:0 0 auto;
+}
+.capa-prosp-total b{
+  display:block;
+  font-size:2.1rem;
+  font-weight:700;
+  line-height:1;
+  color:var(--lime);
+  letter-spacing:-.02em;
+}
+.capa-prosp-total span{
+  font-size:.72rem;
+  color:rgba(244,247,236,.7);
+  text-transform:uppercase;
+  letter-spacing:.06em;
+}
+.capa-prosp-chips{
+  flex:1 1 100%;
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+  margin-top:2px;
+}
+.capa-prosp-chips span{
+  background:rgba(255,255,255,.1);
+  border:1px solid rgba(255,255,255,.16);
+  border-radius:999px;
+  padding:5px 12px;
+  font-size:.74rem;
+  font-weight:600;
+  color:rgba(244,247,236,.9);
+}
+
+.cartoes-prosp{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(158px,1fr));
+  gap:12px;
+  margin-bottom:20px;
+}
+.cartao-metrica{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  box-shadow:var(--sombra);
+  padding:14px 16px 14px 18px;
+  position:relative;
+  overflow:hidden;
+}
+.cartao-metrica::before{
+  content:"";
+  position:absolute;
+  left:0; top:0; bottom:0;
+  width:4px;
+  background:var(--cor, var(--lime));
+}
+.cartao-metrica b{
+  display:block;
+  font-size:1.6rem;
+  font-weight:700;
+  line-height:1.1;
+  letter-spacing:-.02em;
+  color:var(--cor, var(--ink));
+}
+.cartao-metrica .rotulo{
+  font-size:.76rem;
+  font-weight:600;
+  color:var(--ink-soft);
+  margin-top:3px;
+}
+.cartao-metrica .apoio{
+  font-size:.72rem;
+  color:var(--ink-fraco);
+  margin-top:2px;
+}
+
+.prosp-colunas{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  align-items:start;
+}
+.prosp-previa{ position:sticky; top:18px; }
+
+.origem-aviso{
+  background:var(--lime-suave);
+  border:1px solid #d9ebb4;
+  border-radius:var(--radius-sm);
+  padding:9px 13px;
+  font-size:.8rem;
+  font-weight:600;
+  color:var(--lime-ink);
+  margin-bottom:12px;
+}
+
+.modo-troca{
+  display:flex;
+  gap:3px;
+  background:var(--bg);
+  border:1px solid var(--line);
+  border-radius:999px;
+  padding:3px;
+  margin-bottom:12px;
+  width:fit-content;
+}
+.modo-troca button{
+  border:none;
+  background:none;
+  border-radius:999px;
+  padding:7px 14px;
+  font-size:.8rem;
+  font-weight:600;
+  color:var(--ink-soft);
+}
+.modo-troca button.ativo{ background:var(--lime); color:var(--lime-ink); }
+
+.area-html{
+  font-family:ui-monospace,"Cascadia Code","Consolas",monospace;
+  font-size:.78rem;
+  line-height:1.6;
+  min-height:240px;
+}
+
+/* O palco onde a janela do e-mail flutua */
+.palco{
+  background:#e8e9e4;
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:18px;
+}
+.janela-email{
+  background:#fff;
+  border-radius:12px;
+  box-shadow:0 10px 30px rgba(17,18,20,.13);
+  overflow:hidden;
+}
+.janela-email-topo{
+  display:flex;
+  gap:11px;
+  align-items:flex-start;
+  padding:14px 16px;
+  border-bottom:1px solid var(--line);
+}
+.bolinha-remetente{
+  width:34px; height:34px;
+  flex:0 0 34px;
+  border-radius:50%;
+  background:var(--lime);
+  color:var(--lime-ink);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  font-size:.95rem;
+}
+.janela-email-assunto{
+  font-size:.95rem;
+  font-weight:700;
+  line-height:1.35;
+  word-break:break-word;
+}
+.janela-email-de{
+  font-size:.76rem;
+  color:var(--ink-fraco);
+  margin-top:2px;
+}
+.janela-email-corpo{
+  max-height:520px;
+  overflow-y:auto;
+  background:#fff;
+}
+.janela-email-corpo iframe{
+  width:100%;
+  border:0;
+  display:block;
+  min-height:360px;
+}
+.previa-nota{
+  font-size:.75rem;
+  color:var(--ink-fraco);
+  margin:9px 2px 0;
+  line-height:1.5;
+}
+
+.tela-cheia{
+  position:fixed;
+  inset:0;
+  background:rgba(17,18,20,.72);
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:22px;
+  z-index:110;
+}
+.tela-cheia.aparece{ display:flex; }
+.tela-cheia-caixa{
+  background:#fff;
+  border-radius:14px;
+  width:100%;
+  max-width:640px;
+  max-height:92vh;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+}
+.tela-cheia-caixa iframe{ flex:1; width:100%; border:0; min-height:420px; }
+
+.progresso-envio{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius-sm);
+  padding:14px 16px;
+  margin-top:12px;
+}
+
+.fila-rascunho{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:18px 20px;
+}
+.fila-contador{
+  font-size:.78rem;
+  color:var(--ink-fraco);
+  margin-bottom:8px;
+}
+.fila-nome{ font-size:1rem; font-weight:700; margin-bottom:2px; }
+.fila-email{ font-size:.8rem; color:var(--ink-fraco); margin-bottom:12px; }
+
+.modelos-linha{
+  display:flex;
+  gap:7px;
+  flex-wrap:wrap;
+  align-items:center;
+  margin-bottom:12px;
+}
+.modelo-chip{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  border:1px solid var(--line);
+  background:var(--card);
+  border-radius:999px;
+  padding:6px 12px;
+  font-size:.78rem;
+  font-weight:600;
+  color:var(--ink-soft);
+}
+.modelo-chip:hover{ border-color:var(--line-forte); color:var(--ink); }
+.modelo-chip.cheio{ background:var(--lime-suave); border-color:#cfe39a; color:var(--lime-ink); }
+
 /* ---------------- TRANSCRICOES ---------------- */
 .grade-trans{
   display:grid;
@@ -1035,6 +1356,12 @@ tr.alvo-solta td{ box-shadow:inset 0 2px 0 var(--lime); }
   .grade-ref{ grid-template-columns:repeat(auto-fill,minmax(140px,1fr)); }
   .grade-trans{ grid-template-columns:1fr; }
   .trans-video.vertical{ height:420px; }
+  .prosp-colunas{ grid-template-columns:1fr; }
+  .prosp-previa{ position:static; }
+  .capa-prosp{ padding:20px; border-radius:18px; }
+  .capa-prosp-total{ text-align:left; }
+  .capa-prosp h2{ font-size:1.15rem; }
+  .palco{ padding:12px; }
   .campo-duplo{ grid-template-columns:1fr; }
   .busca{ max-width:none; }
   body{ font-size:14px; }

@@ -354,6 +354,47 @@
     }
   }
 
+  /* O Resend responde em inglês e em linguagem técnica. Aqui a gente
+     troca os recados mais comuns por uma frase que diz o que fazer. */
+  function traduzirErro(texto){
+    var t = String(texto || "");
+    var b = t.toLowerCase();
+
+    if (/domain is not verified|not verified/.test(b)){
+      return "O Resend recusou o endereço de quem envia, porque o domínio dele não foi verificado. "
+           + "Se você colocou o seu Gmail no segredo EMAIL_REMETENTE, apague esse segredo: "
+           + "o Gmail não é um domínio seu, então ele não pode ser verificado.";
+    }
+    if (/only send testing emails to your own/.test(b)){
+      return "Enquanto não houver domínio próprio verificado, o Resend só entrega para o seu próprio e-mail. "
+           + "Para falar com as marcas hoje, use o modo rascunho.";
+    }
+    if (/invalid.{0,3}from|from.{0,20}invalid/.test(b)){
+      return "O endereço de quem envia está escrito de um jeito que o Resend não aceita. "
+           + "No segredo EMAIL_REMETENTE, o formato é: Gabriella Braga <algo@dominio.com>, sem aspas em volta.";
+    }
+    if (/api key is invalid|invalid api key|unauthorized/.test(b)){
+      return "A chave do Resend não foi aceita. Gere uma chave nova no Resend e troque o segredo RESEND_API_KEY no Supabase.";
+    }
+    if (/rate|too many/.test(b)){
+      return "Você mandou rápido demais para o Resend. Espere um minuto e tente de novo.";
+    }
+    return t;
+  }
+
+  /* A função guarda o motivo real de cada falha na tabela de registro.
+     Aqui a gente vai buscar esse motivo para mostrar na tela, em vez
+     de ficar chutando o que pode ter sido. */
+  async function ultimoErroRegistrado(email){
+    var r = await window.Banco.consulta("email_envios", function(c){
+      var q = c.from("email_envios").select("erro,email,data").eq("status", "erro");
+      if (email) q = q.eq("email", email);
+      return q.order("data", { ascending:false }).limit(1);
+    });
+    var linha = (r.dados || [])[0];
+    return linha && linha.erro ? traduzirErro(linha.erro) : "";
+  }
+
   async function marcarComoEnviadas(lista){
     var hoje = A.paraISO(A.hoje());
     var ids = lista.map(function(d){ return d.id; }).filter(Boolean);
@@ -435,7 +476,11 @@
       totais.enviados += A.numero(r.enviados);
       totais.falharam += A.numero(r.falharam);
       totais.pulados  += A.numero(r.pulados);
-      enviadasComSucesso = enviadasComSucesso.concat(lote);
+
+      /* Só marca como enviada se algo saiu de verdade neste lote. Sem
+         isso, um lote que falhou inteiro ficaria marcado como enviado e
+         essas marcas nunca mais entrariam num disparo. */
+      if (A.numero(r.enviados) > 0) enviadasComSucesso = enviadasComSucesso.concat(lote);
 
       progresso.feitos = Math.min(i + lote.length, lista.length);
       desenhar();
@@ -448,6 +493,12 @@
     }
 
     await marcarComoEnviadas(enviadasComSucesso);
+
+    /* Nada saiu e houve falha: busca o motivo real em vez de só
+       mostrar o número de falhas. */
+    if (!totais.enviados && totais.falharam && !totais.mensagem && !totais.cotaAcabou){
+      totais.mensagem = await ultimoErroRegistrado("");
+    }
 
     enviando = false;
     progresso = null;
@@ -493,7 +544,11 @@
     } else if (r.cotaAcabou){
       A.recado("A cota diária do Resend acabou. Tente amanhã.", true);
     } else {
-      A.recado("O teste não saiu. Confira a chave do Resend no Supabase.", true);
+      /* O teste não saiu. Em vez de chutar o motivo, vamos ler o
+         motivo de verdade que a função acabou de guardar. */
+      var motivo = await ultimoErroRegistrado(MEU_EMAIL);
+      A.recado(motivo || "O teste não saiu e não achei o motivo registrado. Confira a chave do Resend no Supabase.", true);
+      await recarregar();
     }
   }
 
@@ -650,7 +705,7 @@
           '<td class="celula-fraca">' + A.escapar(A.dataBR(e.data)) + '</td>' +
           '<td>' + (e.status === "ok"
             ? '<span class="pilula p-verde">enviado</span>'
-            : '<span class="pilula p-vermelho" title="' + A.escapar(e.erro || "") + '">erro</span>') + '</td>' +
+            : '<span class="pilula p-vermelho" title="' + A.escapar(traduzirErro(e.erro)) + '">erro</span>') + '</td>' +
         '</tr>';
       }).join("") +
       '</tbody></table></div>';

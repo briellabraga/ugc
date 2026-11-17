@@ -4,27 +4,22 @@
 // Este arquivo NAO faz parte do seu site. Ele mora dentro do
 // Supabase, e e o unico lugar que enxerga a chave do Resend.
 //
+// Esta versao nao usa nenhuma biblioteca de fora. Ela fala com o
+// Supabase e com o Resend direto, so com recursos que ja existem
+// no Deno. Isso e de proposito: sem download no momento de
+// publicar, a publicacao nao tem como falhar por causa disso.
+//
 // ONDE COLAR:
-// 1. Entre no Supabase e abra o seu projeto
-// 2. Menu da esquerda, clique em "Edge Functions"
-// 3. Clique em "Deploy a new function", escolha criar pelo editor
-// 4. De o nome exato: enviar-emails
-// 5. Apague o exemplo que vier e cole TODO este arquivo
-// 6. Clique em "Deploy"
+// 1. No Supabase, menu da esquerda, Edge Functions
+// 2. Deploy a new function, opcao Via editor
+// 3. Nome exato: enviar-emails
+// 4. Apague TODO o exemplo que vier e cole este arquivo inteiro
+// 5. Clique no botao Deploy function, no canto de cima
 //
-// ONDE COLAR A CHAVE SECRETA (isso e separado):
-// Em Edge Functions, aba "Secrets", clique em "Add new secret":
+// A CHAVE SECRETA vai em outro lugar, nos segredos:
 //   Nome:  RESEND_API_KEY
-//   Valor: a chave que voce gerou no Resend (comeca com re_)
-// Salve. Essa chave nunca aparece no seu site.
-//
-// Se um dia voce verificar um dominio seu no Resend, crie tambem
-// o segredo EMAIL_REMETENTE com algo como contato@seudominio.com.
-// Sem ele, a funcao usa o remetente de teste do Resend, que so
-// entrega e-mail para voce mesma.
+//   Valor: a chave do Resend, que comeca com re_
 // ============================================================
-
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2.45.4";
 
 // So esta pessoa pode disparar. Qualquer outra recebe recusa.
 const DONA = "gabriellavazbraga@gmail.com";
@@ -68,24 +63,27 @@ Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
   if (req.method !== "POST") return responder({ erro: "Método não permitido" }, 405);
 
+  const BASE = Deno.env.get("SUPABASE_URL") || "";
+  const ANON = Deno.env.get("SUPABASE_ANON_KEY") || "";
+
   // ---------- 1. So a dona logada passa ----------
   const autorizacao = req.headers.get("Authorization") || "";
   if (!autorizacao.startsWith("Bearer ")) {
     return responder({ erro: "Você precisa estar logada para disparar." }, 401);
   }
 
-  const supabase = createClient(
-    Deno.env.get("SUPABASE_URL")!,
-    Deno.env.get("SUPABASE_ANON_KEY")!,
-    { global: { headers: { Authorization: autorizacao } } },
-  );
-
-  const { data: dadosUsuario, error: erroUsuario } = await supabase.auth.getUser();
-  const email = dadosUsuario?.user?.email?.toLowerCase() || "";
-
-  if (erroUsuario || !email) {
+  let email = "";
+  try {
+    const resposta = await fetch(BASE + "/auth/v1/user", {
+      headers: { apikey: ANON, Authorization: autorizacao },
+    });
+    const usuario = await resposta.json();
+    email = String(usuario?.email || "").toLowerCase();
+  } catch {
     return responder({ erro: "Não consegui confirmar o seu login." }, 401);
   }
+
+  if (!email) return responder({ erro: "Não consegui confirmar o seu login." }, 401);
   if (email !== DONA.toLowerCase()) {
     return responder({ erro: "Esta conta não tem permissão para disparar." }, 403);
   }
@@ -95,7 +93,8 @@ Deno.serve(async (req) => {
     destinatarios?: { email: string; nome?: string }[];
     assunto?: string;
     html?: string;
-  };
+  } = {};
+
   try {
     entrada = await req.json();
   } catch {
@@ -113,7 +112,7 @@ Deno.serve(async (req) => {
   // ---------- 3. Teto de 250 ----------
   if (destinatarios.length > MAXIMO_POR_CHAMADA) {
     return responder(
-      { erro: `São no máximo ${MAXIMO_POR_CHAMADA} destinatários por vez. Vieram ${destinatarios.length}.` },
+      { erro: "São no máximo " + MAXIMO_POR_CHAMADA + " destinatários por vez. Vieram " + destinatarios.length + "." },
       400,
     );
   }
@@ -137,8 +136,18 @@ Deno.serve(async (req) => {
   });
 
   // ---------- 5. Quem pediu para sair nao recebe ----------
-  const { data: descadastrados } = await supabase.from("email_optout").select("email");
-  const fora = new Set((descadastrados || []).map((r: { email: string }) => String(r.email || "").toLowerCase()));
+  const fora = new Set<string>();
+  try {
+    const resposta = await fetch(BASE + "/rest/v1/email_optout?select=email", {
+      headers: { apikey: ANON, Authorization: autorizacao },
+    });
+    const linhas = await resposta.json();
+    if (Array.isArray(linhas)) {
+      for (const l of linhas) fora.add(String(l?.email || "").toLowerCase());
+    }
+  } catch {
+    // Sem a lista de descadastro o envio continua, so nao filtra.
+  }
 
   // ---------- Envio ----------
   let enviados = 0;
@@ -153,7 +162,10 @@ Deno.serve(async (req) => {
     const paraEmail = String(alvo?.email || "").trim();
     const nomeDaMarca = String(alvo?.nome || "").trim();
 
-    if (cotaAcabou) { faltaram.push(paraEmail); continue; }
+    if (cotaAcabou) {
+      faltaram.push(paraEmail);
+      continue;
+    }
 
     if (fora.has(paraEmail.toLowerCase())) {
       pulados++;
@@ -167,7 +179,7 @@ Deno.serve(async (req) => {
       const resposta = await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${chave}`,
+          Authorization: "Bearer " + chave,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -177,19 +189,20 @@ Deno.serve(async (req) => {
           html: htmlFinal,
           reply_to: RESPONDER_PARA,
           headers: {
-            "List-Unsubscribe": `<mailto:${RESPONDER_PARA}?subject=SAIR>`,
+            "List-Unsubscribe": "<mailto:" + RESPONDER_PARA + "?subject=SAIR>",
           },
         }),
       });
 
-      const corpo = await resposta.json().catch(() => ({}));
+      let corpo: Record<string, unknown> = {};
+      try { corpo = await resposta.json(); } catch { corpo = {}; }
 
       if (resposta.ok && corpo?.id) {
         enviados++;
-        registros.push({ email: paraEmail, assunto: assuntoFinal, status: "ok", resend_id: corpo.id });
+        registros.push({ email: paraEmail, assunto: assuntoFinal, status: "ok", resend_id: String(corpo.id) });
       } else {
         const nomeDoErro = String(corpo?.name || "");
-        const textoDoErro = String(corpo?.message || corpo?.error || `erro ${resposta.status}`);
+        const textoDoErro = String(corpo?.message || corpo?.error || ("erro " + resposta.status));
 
         // ---------- 10. Cota diaria acabou: para na hora ----------
         if (nomeDoErro === "daily_quota_exceeded" || /daily.quota/i.test(textoDoErro)) {
@@ -204,12 +217,8 @@ Deno.serve(async (req) => {
       }
     } catch (falha) {
       falharam++;
-      registros.push({
-        email: paraEmail,
-        assunto: assuntoFinal,
-        status: "erro",
-        erro: String((falha as Error)?.message || falha).slice(0, 400),
-      });
+      const texto = falha instanceof Error ? falha.message : String(falha);
+      registros.push({ email: paraEmail, assunto: assuntoFinal, status: "erro", erro: texto.slice(0, 400) });
     }
 
     // ---------- 6. Ritmo seguro ----------
@@ -218,11 +227,27 @@ Deno.serve(async (req) => {
 
   // ---------- 9. Uma linha por destinatario no registro ----------
   if (registros.length) {
-    const { error: erroRegistro } = await supabase.from("email_envios").insert(registros);
-    if (erroRegistro) {
+    try {
+      const gravar = await fetch(BASE + "/rest/v1/email_envios", {
+        method: "POST",
+        headers: {
+          apikey: ANON,
+          Authorization: autorizacao,
+          "Content-Type": "application/json",
+          Prefer: "return=minimal",
+        },
+        body: JSON.stringify(registros),
+      });
+      if (!gravar.ok) {
+        return responder({
+          enviados, falharam, pulados, cotaAcabou, faltaram,
+          aviso: "Os e-mails saíram, mas não consegui gravar o registro. Rode o arquivo disparo.sql no Supabase.",
+        });
+      }
+    } catch {
       return responder({
         enviados, falharam, pulados, cotaAcabou, faltaram,
-        aviso: "Os e-mails saíram, mas não consegui gravar o registro. Rode o arquivo disparo.sql no Supabase.",
+        aviso: "Os e-mails saíram, mas não consegui gravar o registro.",
       });
     }
   }

@@ -124,7 +124,11 @@ Deno.serve(async (req) => {
       500,
     );
   }
-  const remetente = Deno.env.get("EMAIL_REMETENTE") || "onboarding@resend.dev";
+  // Enquanto nao houver dominio proprio, o endereco tem que ser o de
+  // teste do Resend, mas o nome que aparece na caixa de entrada pode
+  // ser o seu. Com dominio proprio, basta trocar o segredo
+  // EMAIL_REMETENTE por algo como: Gabriella Braga <contato@seudominio.com>
+  const remetente = Deno.env.get("EMAIL_REMETENTE") || "Gabriella Braga <onboarding@resend.dev>";
 
   // Nunca duas vezes para o mesmo e-mail no mesmo disparo.
   const vistos = new Set<string>();

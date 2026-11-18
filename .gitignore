@@ -1,0 +1,7 @@
+# A foto original, pesada, fica so no computador. O site usa a
+# foto.jpg reduzida. Guardar a original aqui e util para gerar
+# outros tamanhos depois, mas ela nao precisa ir para a internet.
+foto-original.jpg
+
+# Testes de recorte, que nao fazem parte do site.
+teste-recorte.png

@@ -368,13 +368,52 @@
 
   function filtrar(){
     var termo = busca.trim().toLowerCase();
-    return marcas.filter(function(m){
+    var achadas = marcas.filter(function(m){
       if (filtro !== "Todas" && m.situacao !== filtro) return false;
       if (!termo) return true;
       return [m.nome, m.instagram, m.email]
         .map(function(x){ return String(x || "").toLowerCase(); })
         .some(function(x){ return x.indexOf(termo) !== -1; });
     });
+
+    /* As favoritas sobem para o topo, valendo tambem quando voce esta
+       buscando ou filtrando. O resto da ordem fica como estava, porque
+       o sort do navegador nao embaralha quem empata. */
+    return achadas.sort(function(a, b){
+      return (b.favorita ? 1 : 0) - (a.favorita ? 1 : 0);
+    });
+  }
+
+  /* ---------------- FAVORITAS ---------------- */
+
+  /* O icone() do painel desenha sempre so o contorno. Aqui a gente
+     desenha a estrela a mao, para poder preencher ela quando a marca
+     for favorita. Cheia quer dizer favorita, vazia quer dizer comum. */
+  function estrela(cheia){
+    return '<svg viewBox="0 0 24 24" width="15" height="15" ' +
+      'fill="' + (cheia ? "currentColor" : "none") + '" stroke="currentColor" ' +
+      'stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' +
+      '<path d="m12 3 2.9 5.9 6.5.9-4.7 4.6 1.1 6.5L12 17.8 6.2 20.9l1.1-6.5L2.6 9.8l6.5-.9Z"/></svg>';
+  }
+
+  async function favoritar(id, valor){
+    var m = marcas.filter(function(x){ return x.id === id; })[0];
+    if (m) m.favorita = valor;
+    desenhar();
+
+    var r = await window.Banco.consulta("marcas", function(c){
+      return c.from("marcas").update({ favorita: valor }).eq("id", id);
+    });
+
+    if (r.erro){
+      /* Volta atras na tela, para nao mostrar uma estrela que o banco
+         nao guardou de verdade. */
+      if (m) m.favorita = !valor;
+      desenhar();
+      A.recado(/favorita|column|coluna/i.test(r.erro)
+        ? "Para favoritar, falta uma coluna no banco. Rode o arquivo favoritas.sql no Supabase."
+        : r.erro, true);
+    }
   }
 
   /* ---------------- SELECIONAR PARA A PROSPECÇÃO ---------------- */
@@ -452,6 +491,7 @@
     return '<div class="rolagem cartao"><table>' +
       '<thead><tr>' +
         '<th style="width:34px"></th>' +
+        '<th style="width:34px" title="Favoritas ficam no topo"></th>' +
         '<th>Marca</th><th>Instagram</th><th>E-mail</th><th>Telefone</th>' +
         '<th>Situação</th><th>Observação</th><th>Último contato</th><th style="width:76px"></th>' +
       '</tr></thead><tbody>' +
@@ -459,11 +499,17 @@
         var ig = arroba(m.instagram);
         var zap = linkZap(m.telefone);
         var temEmail = !!String(m.email || "").trim();
-        return '<tr class="clicavel' + (m.selecionada ? " selecionada" : "") + '" data-abrir="' + A.escapar(m.id) + '">' +
+        return '<tr class="clicavel' + (m.selecionada ? " selecionada" : "") +
+          (m.favorita ? " favorita-linha" : "") + '" data-abrir="' + A.escapar(m.id) + '">' +
           '<td><input type="checkbox" class="caixa-marca" data-escolher="' + A.escapar(m.id) + '"' +
             (m.selecionada ? " checked" : "") + (temEmail ? "" : " disabled") +
             ' title="' + (temEmail ? "Escolher para a prospecção" : "Esta marca não tem e-mail cadastrado") + '"' +
             ' aria-label="Escolher ' + A.escapar(m.nome || "marca") + ' para a prospecção"></td>' +
+          '<td><button type="button" class="btn-estrela' + (m.favorita ? " e-cheia" : "") + '"' +
+            ' data-favoritar="' + A.escapar(m.id) + '"' +
+            ' title="' + (m.favorita ? "Tirar dos favoritos" : "Favoritar, para subir ao topo") + '"' +
+            ' aria-pressed="' + (m.favorita ? "true" : "false") + '"' +
+            ' aria-label="Favoritar ' + A.escapar(m.nome || "marca") + '">' + estrela(m.favorita) + '</button></td>' +
           '<td class="celula-forte">' + A.escapar(m.nome || "sem nome") +
             (A.ehExemplo(m) ? '<span class="etiqueta-exemplo">exemplo</span>' : '') + '</td>' +
           '<td>' + (ig
@@ -648,6 +694,16 @@
       caixa.addEventListener("change", function(e){
         e.stopPropagation();
         escolher(caixa.dataset.escolher, caixa.checked);
+      });
+    });
+
+    /* A estrela também não pode abrir o formulário da linha. */
+    area.querySelectorAll("[data-favoritar]").forEach(function(botao){
+      botao.addEventListener("click", function(e){
+        e.stopPropagation();
+        var id = botao.dataset.favoritar;
+        var m = marcas.filter(function(x){ return x.id === id; })[0];
+        favoritar(id, !(m && m.favorita));
       });
     });
 

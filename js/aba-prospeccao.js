@@ -95,6 +95,7 @@
   function opcoesDestino(){
     var lista = [
       { valor:"selecionadas", rotulo:"Só as marcas que eu selecionei" },
+      { valor:"favoritas",    rotulo:"Só as minhas favoritas" },
       { valor:"eu",           rotulo:"Só para mim (teste)" },
       { valor:"todas",        rotulo:"Todas as marcas com e-mail" }
     ];
@@ -108,6 +109,7 @@
   function listaBase(){
     if (destino === "eu") return [{ nome: MEU_NOME, email: MEU_EMAIL }];
     if (destino === "selecionadas") return comEmail().filter(function(m){ return m.selecionada; });
+    if (destino === "favoritas") return comEmail().filter(function(m){ return m.favorita; });
     if (destino === "todas") return comEmail();
     if (destino.indexOf("situacao:") === 0){
       var alvo = destino.slice(9);
@@ -119,9 +121,17 @@
   /* Quantas ficaram de fora por não ter e-mail cadastrado. */
   function semEmail(){
     if (destino === "eu" || destino === "selecionadas") return 0;
-    var todas = destino === "todas"
-      ? marcas
-      : marcas.filter(function(m){ return String(m.situacao || "") === destino.slice(9); });
+
+    var todas;
+    if (destino === "todas"){
+      todas = marcas;
+    } else if (destino === "favoritas"){
+      /* Dá para favoritar uma marca antes de descobrir o e-mail dela,
+         então aqui vale avisar quantas favoritas ficaram de fora. */
+      todas = marcas.filter(function(m){ return m.favorita; });
+    } else {
+      todas = marcas.filter(function(m){ return String(m.situacao || "") === destino.slice(9); });
+    }
     return todas.filter(function(m){ return !String(m.email || "").trim(); }).length;
   }
 
@@ -162,6 +172,17 @@
       if (destino === "selecionadas"){
         return "Nenhuma marca está selecionada. Vá na aba Marcas, marque no quadradinho quem deve receber, "
              + "e volte aqui. Ou troque o campo acima para Todas as marcas com e-mail.";
+      }
+      if (destino === "favoritas"){
+        var quantasFav = marcas.filter(function(m){ return m.favorita; }).length;
+        if (!quantasFav){
+          return "Você ainda não favoritou nenhuma marca. Vá na aba Marcas e clique na estrela "
+               + "de quem você quer no topo da lista.";
+        }
+        return quantasFav === 1
+          ? "A sua única favorita não tem e-mail cadastrado. Preencha o e-mail dela na aba Marcas."
+          : "Nenhuma das suas " + quantasFav + " favoritas tem e-mail cadastrado. "
+            + "Preencha o e-mail delas na aba Marcas.";
       }
       if (destino.indexOf("situacao:") === 0){
         return "Nenhuma marca está como " + destino.slice(9) + " e com e-mail cadastrado ao mesmo tempo.";
@@ -775,6 +796,7 @@
         opcoesDestino().map(function(o){
           var quantos = "";
           if (o.valor === "selecionadas") quantos = " (" + comEmail().filter(function(m){ return m.selecionada; }).length + ")";
+          if (o.valor === "favoritas")    quantos = " (" + comEmail().filter(function(m){ return m.favorita; }).length + ")";
           return '<option value="' + A.escapar(o.valor) + '"' + (o.valor === destino ? " selected" : "") + '>' +
                  A.escapar(o.rotulo + quantos) + '</option>';
         }).join("") +

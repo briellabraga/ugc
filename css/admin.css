@@ -806,6 +806,28 @@ tr.alvo-solta td{ box-shadow:inset 0 2px 0 var(--lime); }
 tr.selecionada{ background:var(--lime-suave); }
 tr.selecionada:hover{ background:#e7f3cf; }
 
+/* ---------------- ESTRELA DE FAVORITA ---------------- */
+.btn-estrela{
+  width:28px; height:28px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  padding:0;
+  border:0;
+  background:none;
+  border-radius:8px;
+  cursor:pointer;
+  color:#c7cbc1;
+  transition:color .15s, background .15s, transform .15s;
+}
+.btn-estrela:hover{ background:var(--ambar-bg); color:var(--ambar); transform:scale(1.12); }
+.btn-estrela.e-cheia{ color:#dca82e; }
+.btn-estrela.e-cheia:hover{ color:var(--ambar); }
+
+/* Uma listinha dourada na beirada, para voce enxergar de longe onde
+   termina o bloco das favoritas que ficou no topo da tabela. */
+tr.favorita-linha td:first-child{ box-shadow:inset 3px 0 0 #dca82e; }
+
 .barra-selecao{
   display:flex;
   align-items:center;

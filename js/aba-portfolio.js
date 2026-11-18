@@ -8,8 +8,31 @@
   "use strict";
   var A = window.Admin;
 
-  var NICHOS_SUGERIDOS  = ["Skincare","Fitness","Pet","Viagem","Tech"];
-  var FORMATOS_SUGERIDOS = ["Reels 9:16","TikTok 9:16","Story 9:16","YouTube Shorts","Feed 4:5","Foto"];
+  /* As listas do formulario de video. Sao agrupadas porque o menu
+     mostra o nome do grupo em cima, e assim da para achar o formato
+     pela rede em que ele foi publicado. */
+  var NICHOS = [
+    { nome:"", itens:["Skincare","Fitness","Pet","Viagem","Tech"] }
+  ];
+
+  var FORMATOS = [
+    { nome:"Instagram", itens:[
+      "Reels 9:16",
+      "Stories 9:16",
+      "Feed 4:5 (retrato)",
+      "Feed 1:1 (quadrado)",
+      "Feed 1.91:1 (paisagem)",
+      "Carrossel"
+    ] },
+    { nome:"TikTok", itens:[
+      "TikTok 9:16",
+      "TikTok carrossel de fotos"
+    ] },
+    { nome:"Outras redes", itens:[
+      "YouTube Shorts",
+      "Foto"
+    ] }
+  ];
 
   var videos = [];
   var visitas = [];    // janela longa, para o mes e as comparacoes
@@ -326,10 +349,69 @@
   }
 
   /* ---------------- FORMULARIO ---------------- */
-  function opcoes(lista, atual){
-    return lista.map(function(o){
-      return '<option value="' + A.escapar(o) + '"' + (o === atual ? " selected" : "") + '>' + A.escapar(o) + '</option>';
-    }).join("");
+  /* Monta um menu de escolha com um campo de texto escondido junto.
+
+     Antes isto era um campo de texto com <datalist>. As sugestoes so
+     apareciam depois de comecar a digitar a palavra certa, entao na
+     pratica ninguem descobria que elas existiam. Agora o menu mostra
+     tudo de uma vez, e quem quiser escrever algo que nao esta na
+     lista escolhe "Outro" e o campo de texto aparece. */
+  function campoEscolha(id, rotulo, grupos, atual, exemplo){
+    var valor = String(atual || "").trim();
+
+    var conhecidos = [];
+    grupos.forEach(function(g){ conhecidos = conhecidos.concat(g.itens); });
+    var jaCadastrado = valor && conhecidos.indexOf(valor) === -1;
+
+    var html = '<div class="campo"><label for="' + id + '">' + A.escapar(rotulo) + '</label>' +
+      '<select id="' + id + '">' +
+      '<option value=""' + (valor ? "" : " selected") + '>Não informar</option>';
+
+    grupos.forEach(function(g){
+      if (g.nome) html += '<optgroup label="' + A.escapar(g.nome) + '">';
+      html += g.itens.map(function(item){
+        return '<option value="' + A.escapar(item) + '"' +
+          (item === valor ? " selected" : "") + '>' + A.escapar(item) + '</option>';
+      }).join("");
+      if (g.nome) html += '</optgroup>';
+    });
+
+    /* Um video salvo antes pode ter um formato que saiu da lista. Ele
+       entra no menu como está, para nada se perder sem avisar. */
+    if (jaCadastrado){
+      html += '<optgroup label="O que já estava aqui">' +
+        '<option value="' + A.escapar(valor) + '" selected>' + A.escapar(valor) + '</option>' +
+        '</optgroup>';
+    }
+
+    html += '<option value="__outro">Outro, escrever...</option>' +
+      '</select>' +
+      '<input type="text" id="' + id + 'Outro" class="escondido" style="margin-top:6px" ' +
+      'placeholder="' + A.escapar(exemplo) + '" value="">' +
+      '</div>';
+
+    return html;
+  }
+
+  /* Le o que ficou escolhido, venha do menu ou do campo de texto. */
+  function lerEscolha(id){
+    var menu = document.getElementById(id);
+    if (!menu) return "";
+    if (menu.value !== "__outro") return menu.value.trim();
+    var escrito = document.getElementById(id + "Outro");
+    return escrito ? escrito.value.trim() : "";
+  }
+
+  /* Mostra o campo de texto so quando "Outro" esta escolhido. */
+  function ligarEscolha(id){
+    var menu = document.getElementById(id);
+    var escrito = document.getElementById(id + "Outro");
+    if (!menu || !escrito) return;
+    menu.addEventListener("change", function(){
+      var outro = menu.value === "__outro";
+      escrito.classList.toggle("escondido", !outro);
+      if (outro) escrito.focus();
+    });
   }
 
   function abrirFormulario(video){
@@ -346,13 +428,8 @@
         '<input id="fLink" type="url" value="' + A.escapar(video.link === "#" ? "" : video.link) + '" placeholder="https://instagram.com/reel/..."></div>' +
 
         '<div class="campo-duplo">' +
-          '<div class="campo"><label for="fNicho">Nicho</label>' +
-          '<input id="fNicho" list="listaNichos" value="' + A.escapar(video.nicho) + '" placeholder="Skincare">' +
-          '<datalist id="listaNichos">' + opcoes(NICHOS_SUGERIDOS) + '</datalist></div>' +
-
-          '<div class="campo"><label for="fFormato">Formato</label>' +
-          '<input id="fFormato" list="listaFormatos" value="' + A.escapar(video.formato) + '" placeholder="Reels 9:16">' +
-          '<datalist id="listaFormatos">' + opcoes(FORMATOS_SUGERIDOS) + '</datalist></div>' +
+          campoEscolha("fNicho", "Nicho", NICHOS, video.nicho, "Escreva o nicho") +
+          campoEscolha("fFormato", "Formato", FORMATOS, video.formato, "Escreva o formato") +
         '</div>' +
 
         '<div class="campo-duplo">' +
@@ -367,6 +444,11 @@
         '<input id="fVisivel" type="checkbox"' + (video.visivel ? " checked" : "") + '> Mostrar este vídeo no meu site</label></div>' +
 
         '<div class="campo-erro escondido" id="fErro"></div>',
+
+      aoAbrir: function(){
+        ligarEscolha("fNicho");
+        ligarEscolha("fFormato");
+      },
 
       botoes: [
         { texto:"Cancelar", aoClicar:function(fechar){ fechar(); } },
@@ -384,8 +466,8 @@
             var dados = {
               titulo: titulo,
               link: document.getElementById("fLink").value.trim(),
-              nicho: document.getElementById("fNicho").value.trim(),
-              formato: document.getElementById("fFormato").value.trim(),
+              nicho: lerEscolha("fNicho"),
+              formato: lerEscolha("fFormato"),
               marca: document.getElementById("fMarca").value.trim(),
               destaque: document.getElementById("fDestaque").value.trim(),
               visivel: document.getElementById("fVisivel").checked

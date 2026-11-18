@@ -24,8 +24,11 @@
 // So esta pessoa pode disparar. Qualquer outra recebe recusa.
 const DONA = "gabriellavazbraga@gmail.com";
 
-// Para onde vai a resposta da marca quando ela apertar responder.
-const RESPONDER_PARA = "gabriellavazbraga@gmail.com";
+// Para onde vai a resposta da marca quando ela apertar responder, e
+// tambem para onde chega quem pedir para sair da lista.
+// Se um dia esse endereco mudar, basta criar o segredo RESPONDER_PARA
+// no Supabase, sem precisar publicar a funcao outra vez.
+const RESPONDER_PARA = Deno.env.get("RESPONDER_PARA") || "gabriellabragaugc@gmail.com";
 
 // Teto por chamada, combinado para nao estourar.
 const MAXIMO_POR_CHAMADA = 250;

@@ -295,42 +295,73 @@
   }
 
   /* ---------- FOTO FLUTUANTE (editor) ---------- */
-  /* O texto fica por cima da foto, sempre. E isso que garante que o
-     titulo continue preto e legivel onde os dois se encontram. */
-  .hero-texto{
-    position:relative;
-    z-index:2;
-  }
   .hero-visual{
     position:relative;
-    min-height:520px;
-    z-index:1;
+    min-height:460px;
   }
   .editor-frame{
     position:relative;
     width:100%;
-    max-width:470px;
-    /* A margem negativa puxa a foto para a esquerda, ate ela passar
-       por tras do fim do titulo. E ali que os dois se mesclam. */
-    margin:0 0 0 -155px;
+    max-width:360px;
+    margin:0 auto;
     aspect-ratio:4/5;
+    border-radius:28px;
+    background:
+      linear-gradient(145deg,#dfe6d1,#c9d3b8 40%,#aebd93);
+    box-shadow:var(--shadow-lg);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+    color:#3a3f2f;
+    font-weight:700;
+    padding:20px;
+    overflow:hidden;
   }
-  .editor-frame img{
-    width:100%;
-    height:100%;
+  .editor-frame::after{
+    content:"";
+    position:absolute;
+    inset:14px;
+    border:3px solid var(--lime);
+    border-radius:20px;
+    pointer-events:none;
+  }
+  .editor-frame small{
     display:block;
-    object-fit:cover;
-    /* Enquadra pelo alto, porque o rosto esta na parte de cima. */
-    object-position:50% 12%;
-    /* Um degrade so, do lado que encosta no titulo. Os outros tres
-       lados ficam retos de proposito: quando o fundo da foto for
-       branco, borda reta contra fundo claro nao aparece.
-
-       Para a foto avancar mais sobre o titulo, diminua os numeros.
-       Para ela recuar, aumente. */
-    -webkit-mask-image:linear-gradient(96deg, transparent 4%, rgba(0,0,0,.4) 26%, #000 58%);
-    mask-image:linear-gradient(96deg, transparent 4%, rgba(0,0,0,.4) 26%, #000 58%);
+    font-weight:600;
+    font-size:.78rem;
+    margin-top:8px;
+    color:#4a4f3b;
   }
+
+  .float-chip{
+    position:absolute;
+    background:var(--card);
+    border-radius:14px;
+    box-shadow:var(--shadow-md);
+    padding:10px 14px;
+    font-size:.82rem;
+    font-weight:700;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    animation:float 5s ease-in-out infinite;
+  }
+  .chip-toolbar{
+    top:38%; left:-14%;
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    padding:12px 10px;
+    animation-delay:1.1s;
+  }
+  .chip-toolbar span{
+    width:18px; height:18px;
+    border-radius:6px;
+    background:var(--bg);
+    border:1px solid var(--line);
+  }
+  .chip-toolbar span:first-child{ background:var(--lime); border-color:var(--lime); }
 
   .cursor-chip{
     position:absolute;
@@ -342,6 +373,10 @@
     filter:drop-shadow(0 3px 6px rgba(0,0,0,.25));
   }
 
+  @keyframes float{
+    0%,100%{ transform:translateY(0) rotate(0deg); }
+    50%{ transform:translateY(-10px) rotate(-1.5deg); }
+  }
   @keyframes cursorMove{
     0%,100%{ transform:translate(0,0); }
     25%{ transform:translate(-18px,14px); }
@@ -349,7 +384,7 @@
     75%{ transform:translate(-10px,6px); }
   }
   @media (prefers-reduced-motion: reduce){
-    .cursor-chip{ animation:none; }
+    .float-chip, .cursor-chip{ animation:none; }
   }
 
   .timeline{
@@ -1063,11 +1098,6 @@
   @media (max-width: 980px){
     .hero-grid{ grid-template-columns:1fr; }
     .hero-visual{ order:-1; min-height:auto; margin-bottom:20px; }
-    /* No celular as colunas empilham, entao a foto nao encontra mais
-       o titulo. Sem esse encontro o degrade perde a razao de existir,
-       e a foto volta a ser um retrato normal, de cantos arredondados. */
-    .editor-frame{ margin:0 auto; max-width:330px; }
-    .editor-frame img{ -webkit-mask-image:none; mask-image:none; border-radius:24px; }
     .about-inner{ grid-template-columns:1fr; padding:36px 28px; }
     .highlights-grid{ grid-template-columns:1fr; }
     .work-grid{ grid-template-columns:repeat(2,1fr); }
@@ -1116,6 +1146,7 @@
     section{ padding:64px 0; }
     .about{ border-radius:24px; }
     .brands-track{ animation-duration:20s; }
+    .chip-toolbar{ display:none; }
     .cursor-chip{ right:12%; }
   }
 </style>
@@ -1151,7 +1182,7 @@
   <!-- ============ 1. CAPA ============ -->
   <section class="hero" id="capa" style="padding-top:150px;">
     <div class="wrap hero-grid">
-      <div class="hero-texto">
+      <div>
         <span class="eyebrow" data-en="&lt;span class=&quot;dot&quot;&gt;&lt;/span&gt; UGC Creator available for new projects"><span class="dot"></span> UGC Creator disponível para novos projetos</span>
         <h1 data-en="Creativity that truly &lt;span class=&quot;mark&quot;&gt;sells&lt;/span&gt;">Criatividade que <span class="mark">vende</span> de verdade</h1>
         <p class="lead" data-en="I turn products into authentic videos that stop the scroll and drive real results for skincare, fitness, pet, travel and tech brands.">Eu transformo produtos em vídeos autênticos que param o scroll e geram resultado para marcas de skincare, fitness, pet, viagem e tech.</p>
@@ -1165,10 +1196,15 @@
       </div>
 
       <div class="hero-visual" aria-hidden="false">
-        <div class="editor-frame">
-          <!-- Para trocar a foto depois, basta substituir o arquivo
-               foto.jpg na pasta do site, mantendo o mesmo nome. -->
-          <img src="foto.jpg" alt="Gabriella Braga, UGC Creator" width="1200" height="1081">
+        <div class="editor-frame" role="img" aria-label="Foto de Gabriella Braga, formato retrato 4:5" data-en-aria="Photo of Gabriella Braga, 4:5 portrait format">
+          <!-- Troque este bloco pela sua foto real: <img src="sua-foto.jpg" alt="Gabriella Braga, UGC Creator"> -->
+          <div data-en="CREATOR PHOTO&lt;br&gt;&lt;small&gt;4:5 format, replace with the real image&lt;/small&gt;">
+            FOTO DA CREATOR<br>
+            <small>formato 4:5, troque pela imagem real</small>
+          </div>
+        </div>
+        <div class="float-chip chip-toolbar" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
         </div>
         <svg class="cursor-chip" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M4 2L20 10L12 12L9 20L4 2Z" fill="#111214"/>

@@ -143,6 +143,51 @@
     return { lista:lista, repetidos:repetidos, descadastrados:descadastrados, jaForam:jaForam };
   }
 
+  /* A lista pode sair vazia por cinco motivos bem diferentes, e cada
+     um se resolve de um jeito. Em vez de dizer so que nao ha ninguem,
+     aqui a gente descobre qual foi e diz o que fazer. */
+  function motivoListaVazia(){
+    var info = destinatarios();
+    if (info.lista.length) return "";
+
+    var base = listaBase().length;
+
+    if (!base){
+      if (!marcas.length){
+        return "A sua base de marcas está vazia. Cadastre marcas na aba Marcas primeiro.";
+      }
+      if (!comEmail().length){
+        return "Nenhuma marca da sua base tem e-mail cadastrado. Preencha o e-mail delas na aba Marcas.";
+      }
+      if (destino === "selecionadas"){
+        return "Nenhuma marca está selecionada. Vá na aba Marcas, marque no quadradinho quem deve receber, "
+             + "e volte aqui. Ou troque o campo acima para Todas as marcas com e-mail.";
+      }
+      if (destino.indexOf("situacao:") === 0){
+        return "Nenhuma marca está como " + destino.slice(9) + " e com e-mail cadastrado ao mesmo tempo.";
+      }
+      return "Não há ninguém nesta seleção.";
+    }
+
+    /* Tem gente na base, mas os filtros zeraram a lista. */
+    if (info.jaForam === base){
+      return "Todas as " + base + " marcas desta seleção já receberam um e-mail com este mesmo assunto. "
+           + "Mude o assunto, ou desmarque a opção de pular quem já recebeu.";
+    }
+    if (info.descadastrados === base){
+      return "Todas as " + base + " marcas desta seleção pediram para sair da lista.";
+    }
+
+    var partes = [];
+    if (info.jaForam)        partes.push(info.jaForam + " já recebeu este assunto");
+    if (info.descadastrados) partes.push(info.descadastrados + " pediu para sair da lista");
+    if (info.repetidos)      partes.push(info.repetidos + " tinha e-mail repetido");
+    if (partes.length){
+      return "As " + base + " marcas desta seleção ficaram de fora: " + partes.join(", ") + ".";
+    }
+    return "Não há ninguém nesta seleção.";
+  }
+
   /* ---------------- MONTAR O E-MAIL ---------------- */
   function escapar(t){
     return String(t === undefined || t === null ? "" : t)
@@ -423,7 +468,7 @@
       });
       return;
     }
-    if (!quantos){ A.recado("Não há ninguém nessa seleção", true); return; }
+    if (!quantos){ A.recado(motivoListaVazia() || "Não há ninguém nesta seleção", true); return; }
 
     if (modoEscrita === "html" && !/SAIR/i.test(corpoHTML)){
       A.abrirJanela({
@@ -557,7 +602,7 @@
     var lista = destinatarios().lista;
     if (!lista.length){
       if (destino === "selecionadas"){ confirmarDisparo(); return; }
-      A.recado("Não há ninguém nessa seleção", true);
+      A.recado(motivoListaVazia() || "Não há ninguém nesta seleção", true);
       return;
     }
     if (!assunto.trim()){ A.recado("Escreva o assunto primeiro", true); return; }
@@ -734,10 +779,13 @@
                  A.escapar(o.rotulo + quantos) + '</option>';
         }).join("") +
       '</select>' +
-      '<div class="celula-fraca" style="font-size:.78rem;margin-top:6px">' +
-        '<b>' + info.lista.length + (info.lista.length === 1 ? ' marca' : ' marcas') + '</b> nesta seleção' +
-        (avisos.length ? ', fora ' + A.escapar(avisos.join(", ")) : '') +
-      '</div></div>' +
+      (info.lista.length
+        ? '<div class="celula-fraca" style="font-size:.78rem;margin-top:6px">' +
+            '<b>' + info.lista.length + (info.lista.length === 1 ? ' marca' : ' marcas') + '</b> nesta seleção' +
+            (avisos.length ? ', fora ' + A.escapar(avisos.join(", ")) : '') +
+          '</div>'
+        : '<div class="aviso" style="margin:8px 0 0">' + A.escapar(motivoListaVazia()) + '</div>') +
+      '</div>' +
 
       '<label class="campo-caixa" style="margin-bottom:14px">' +
       '<input type="checkbox" id="pPular"' + (pularJaRecebeu ? " checked" : "") + '> Pular quem já recebeu este mesmo assunto</label>' +

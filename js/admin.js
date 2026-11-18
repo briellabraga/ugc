@@ -149,7 +149,7 @@ window.Admin = (function(){
     clearTimeout(tempoRecado);
     tempoRecado = setTimeout(function(){
       caixaRecado.className = "recado" + (ruim ? " ruim" : "");
-    }, 3200);
+    }, Math.min(9000, 3200 + String(texto).length * 45));
   }
 
   /* ---------------- JANELA ---------------- */

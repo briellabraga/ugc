@@ -318,6 +318,19 @@
     padding:20px;
     overflow:hidden;
   }
+  .editor-frame img{
+    /* A foto ocupa a moldura inteira, por baixo da borda lima.
+       O inset:0 faz ela ignorar o padding de 20px da moldura, para
+       encostar nas quatro beiradas. */
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    /* Enquadra puxando para cima, porque o rosto esta no alto da
+       foto. Se quiser subir mais, diminua esse numero. */
+    object-position:50% 18%;
+  }
   .editor-frame::after{
     content:"";
     position:absolute;
@@ -1162,12 +1175,10 @@
       </div>
 
       <div class="hero-visual" aria-hidden="false">
-        <div class="editor-frame" role="img" aria-label="Foto de Gabriella Braga, formato retrato 4:5" data-en-aria="Photo of Gabriella Braga, 4:5 portrait format">
-          <!-- Troque este bloco pela sua foto real: <img src="sua-foto.jpg" alt="Gabriella Braga, UGC Creator"> -->
-          <div data-en="CREATOR PHOTO&lt;br&gt;&lt;small&gt;4:5 format, replace with the real image&lt;/small&gt;">
-            FOTO DA CREATOR<br>
-            <small>formato 4:5, troque pela imagem real</small>
-          </div>
+        <div class="editor-frame">
+          <!-- Para trocar a foto, substitua o arquivo foto.jpg na
+               pasta do site, mantendo o mesmo nome. -->
+          <img src="foto.jpg" alt="Gabriella Braga, UGC Creator" width="1200" height="1081">
         </div>
         <svg class="cursor-chip" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <path d="M4 2L20 10L12 12L9 20L4 2Z" fill="#111214"/>

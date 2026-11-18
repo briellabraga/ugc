@@ -25,6 +25,12 @@ alter table public.marcas
 create index if not exists marcas_favorita_idx
   on public.marcas (favorita);
 
+-- A API do Supabase guarda na memoria uma lista das colunas que
+-- existem, para responder mais rapido. Essa lista nao se atualiza na
+-- mesma hora, e enquanto isso o painel acha que a coluna nova nao
+-- existe. A linha abaixo manda atualizar na hora.
+notify pgrst, 'reload schema';
+
 -- Conferencia: deve aparecer uma linha, com favorita, boolean e false.
 select column_name, data_type, column_default
 from information_schema.columns

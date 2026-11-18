@@ -44,11 +44,20 @@ window.Banco = (function(){
     var codigo = (erro && erro.code) || "";
     var mensagem = (erro && erro.message) || "";
 
-    if (codigo === "42P01" || /does not exist|not find the table|schema cache/i.test(mensagem)){
-      return "A tabela \"" + rotulo + "\" ainda não existe no banco. Rode o arquivo banco.sql no Supabase.";
+    /* Coluna que falta vem antes de tabela que falta, de proposito.
+       Quando falta uma coluna, o recado do banco tambem fala em
+       "schema cache", e a regra da tabela pegava esse erro primeiro e
+       dizia que a tabela nao existia. Isso assustava sem motivo, e
+       mandava rodar o arquivo errado. */
+    var achouColuna = mensagem.match(/'([a-z0-9_]+)' column/i)
+                   || mensagem.match(/column "?([a-z0-9_]+)"? does not exist/i);
+    if (codigo === "42703" || codigo === "PGRST204" || achouColuna){
+      return "Falta a coluna " + (achouColuna ? "\"" + achouColuna[1] + "\" " : "")
+           + "na tabela \"" + rotulo + "\". Rode no Supabase o arquivo .sql que adiciona ela.";
     }
-    if (codigo === "42703" || /column .* does not exist/i.test(mensagem)){
-      return "Falta uma coluna na tabela \"" + rotulo + "\". Rode o arquivo banco.sql de novo no Supabase.";
+    if (codigo === "42P01" || codigo === "PGRST205"
+        || /relation .* does not exist|not find the table/i.test(mensagem)){
+      return "A tabela \"" + rotulo + "\" ainda não existe no banco. Rode o arquivo banco.sql no Supabase.";
     }
     if (codigo === "42501" || /row-level security|permission denied/i.test(mensagem)){
       return "Sem permissão para acessar \"" + rotulo + "\". Confira se você entrou com o e-mail certo.";

@@ -309,10 +309,10 @@
   .editor-frame{
     position:relative;
     width:100%;
-    max-width:430px;
+    max-width:470px;
     /* A margem negativa puxa a foto para a esquerda, ate ela passar
        por tras do fim do titulo. E ali que os dois se mesclam. */
-    margin:0 0 0 -70px;
+    margin:0 0 0 -155px;
     aspect-ratio:4/5;
   }
   .editor-frame img{
@@ -322,11 +322,24 @@
     object-fit:cover;
     /* Enquadra pelo alto, porque o rosto esta na parte de cima. */
     object-position:50% 12%;
-    /* O degrade apaga a borda esquerda da foto aos poucos, ate ela
-       sumir no fundo da pagina. E isso que tira o retangulo e deixa
-       a foto encostar no texto sem brigar com ele. */
-    -webkit-mask-image:linear-gradient(100deg, transparent 3%, rgba(0,0,0,.4) 22%, #000 54%);
-    mask-image:linear-gradient(100deg, transparent 3%, rgba(0,0,0,.4) 22%, #000 54%);
+    /* Tres degrades ao mesmo tempo, e a foto so aparece onde os tres
+       deixam. O primeiro apaga a esquerda devagar, que e o lado que
+       encosta no titulo. O segundo apaga a direita. O terceiro apaga
+       em cima e embaixo. Sem eles sobrava um retangulo cinza colado
+       no texto, que e exatamente o que a gente nao quer.
+
+       Para a foto aparecer mais, aumente os numeros do primeiro
+       degrade. Para ela sumir mais no fundo, diminua. */
+    -webkit-mask-image:
+      linear-gradient(96deg, transparent 4%, rgba(0,0,0,.4) 26%, #000 58%),
+      linear-gradient(to left, transparent 0%, #000 13%),
+      linear-gradient(to bottom, transparent 0%, #000 11%, #000 62%, transparent 97%);
+    -webkit-mask-composite:source-in, source-in, source-in;
+    mask-image:
+      linear-gradient(96deg, transparent 4%, rgba(0,0,0,.4) 26%, #000 58%),
+      linear-gradient(to left, transparent 0%, #000 13%),
+      linear-gradient(to bottom, transparent 0%, #000 11%, #000 62%, transparent 97%);
+    mask-composite:intersect;
   }
 
   .cursor-chip{
